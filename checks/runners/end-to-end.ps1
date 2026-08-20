@@ -1,7 +1,19 @@
+param(
+    [string]$ComposeOverride = ""
+)
+
 $ErrorActionPreference = "Stop"
 
 $projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $composeFile = Join-Path $projectRoot "checks\compose\end-to-end.yaml"
+$composeArguments = @(
+    "--project-directory", $projectRoot,
+    "--file", $composeFile
+)
+if ($ComposeOverride) {
+    $resolvedOverride = (Resolve-Path -LiteralPath $ComposeOverride).Path
+    $composeArguments += @("--file", $resolvedOverride)
+}
 
 function Invoke-NativeCapture {
     param([scriptblock]$Command)
@@ -66,7 +78,7 @@ $failure = $null
 
 try {
     $resolvedConfig = Invoke-NativeCapture {
-        docker compose --project-directory $projectRoot --file $composeFile config --format json
+        docker compose @composeArguments config --format json
     }
     if ($resolvedConfig.ExitCode -ne 0) {
         Write-Tail $resolvedConfig.Output
@@ -82,7 +94,7 @@ try {
     }
 
     $build = Invoke-NativeCapture {
-        docker compose --project-directory $projectRoot --file $composeFile build --quiet primary-api sandbox-api
+        docker compose @composeArguments build --quiet primary-api sandbox-api
     }
     if ($build.ExitCode -ne 0) {
         Write-Tail $build.Output
@@ -91,7 +103,7 @@ try {
     Write-Host "Application images: READY"
 
     $startup = Invoke-NativeCapture {
-        docker compose --project-directory $projectRoot --file $composeFile up --wait --wait-timeout 150 primary-api sandbox-api n8n
+        docker compose @composeArguments up --wait --wait-timeout 150 primary-api sandbox-api n8n
     }
     if ($startup.ExitCode -ne 0) {
         Write-Tail $startup.Output 22
@@ -100,7 +112,7 @@ try {
     Write-Host "Disposable services: HEALTHY"
 
     $tests = Invoke-NativeCapture {
-        docker compose --project-directory $projectRoot --file $composeFile run --rm --no-deps tests
+        docker compose @composeArguments run --rm --no-deps tests
     }
     if ($tests.ExitCode -ne 0) {
         Write-Tail $tests.Output 26
@@ -120,7 +132,7 @@ catch {
     Write-Host ""
     Write-Host "Relevant service diagnostics:"
     $logs = Invoke-NativeCapture {
-        docker compose --project-directory $projectRoot --file $composeFile logs --no-color --tail 60 primary-api sandbox-api n8n-setup n8n
+        docker compose @composeArguments logs --no-color --tail 60 primary-api sandbox-api n8n-setup n8n
     }
     $relevant = @($logs.Output | Where-Object {
         (([string]$_) -match '(?i)(traceback|exception|error|failed|POST /)') -and
@@ -130,7 +142,7 @@ catch {
 }
 finally {
     $cleanup = Invoke-NativeCapture {
-        docker compose --project-directory $projectRoot --file $composeFile down --volumes --remove-orphans
+        docker compose @composeArguments down --volumes --remove-orphans
     }
     if ($cleanup.ExitCode -eq 0) {
         Write-Host "Cleanup: PASS"

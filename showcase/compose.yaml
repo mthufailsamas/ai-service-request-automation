@@ -1,0 +1,6 @@
+services:
+  tests:
+    environment:
+      E2E_RESULT_FILE: /showcase/e2e-result.json
+    volumes:
+      - ./.runtime/showcase:/showcase

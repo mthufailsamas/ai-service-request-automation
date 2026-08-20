@@ -132,6 +132,26 @@ v1 schema and was safely routed to `NEEDS_REVIEW`; the exact replay made 0 model
 calls; and disposable cleanup passed. This learning result does not replace or
 improve the frozen evaluation scores above.
 
+## One-Command Showcase (Recommended)
+
+For a first-time viewer, this recommended path presents the complete workflow
+in 1 controlled run:
+
+```powershell
+.\showcase.cmd
+```
+
+The command runs the verified 7-case lifecycle with controlled fixture AI,
+local n8n, PostgreSQL, and the fictional Service Desk Sandbox; generates and
+opens `output\showcase-report.html`; and removes its disposable services and
+temporary evidence. The same report file is overwritten on every run. It makes
+0 Ollama, hosted, or paid AI calls and does not alter the locked evaluation.
+
+The report explains the equivalent always-on company workflow, the 7
+fictional case outcomes, human and safety gates, verified controls, and the
+fixed `CHECK` evidence boundary. The role-based guided portal remains available
+for optional interactive access-control inspection.
+
 ## Evidence and Scope
 
 The evidence comes from controlled local runs with fictional users, policies,

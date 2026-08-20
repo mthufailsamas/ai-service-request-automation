@@ -53,6 +53,7 @@ SANDBOX_URL = os.environ["SERVICE_DESK_SANDBOX_URL"]
 SANDBOX_TOKEN = os.environ["SERVICE_DESK_SANDBOX_TOKEN"]
 SANDBOX_DATABASE_URL = os.environ["SERVICE_DESK_SANDBOX_DATABASE_URL"]
 FIXTURE_FILE = Path(os.environ["E2E_FIXTURE_FILE"])
+RESULT_FILE = os.environ.get("E2E_RESULT_FILE", "").strip()
 REQUESTER_ID = UUID("10000000-0000-4000-8000-000000000001")
 AGENT_ID = UUID("10000000-0000-4000-8000-000000000002")
 APPROVER_ID = UUID("10000000-0000-4000-8000-000000000003")
@@ -439,7 +440,7 @@ require(
     and sandbox_records == 6,
     f"unexpected end-to-end aggregate: {dict(aggregate)}, sandbox={sandbox_records}",
 )
-print("[7/7] Aggregate lifecycle evidence and zero unfinished work: PASS")
+print("[7/7] Aggregate lifecycle evidence and 0 unfinished work: PASS")
 
 print("Full end-to-end integration summary")
 print("  Integration groups: 7/7 PASS")
@@ -452,3 +453,99 @@ print("  Duplicate terminal effects: 0")
 print("  Unfinished workflow work: 0")
 print("  Hosted or paid AI calls: 0")
 print("  Full end-to-end gate: PASS")
+
+if RESULT_FILE:
+    case_results = [
+        {
+            "case_reference": incident["case_reference"],
+            "subject": "WMS unavailable",
+            "request_type": "INCIDENT_REPORT",
+            "human_gate": "None",
+            "route": "Incident ticket",
+            "final_state": snapshot(incident["case_id"])["current_state"],
+        },
+        {
+            "case_reference": policy["case_reference"],
+            "subject": "Remote-work policy question",
+            "request_type": "POLICY_QUESTION",
+            "human_gate": "Grounded citation",
+            "route": "Policy response",
+            "final_state": snapshot(policy["case_id"])["current_state"],
+        },
+        {
+            "case_reference": status_case["case_reference"],
+            "subject": "Owned case status",
+            "request_type": "STATUS_REQUEST",
+            "human_gate": "Ownership check",
+            "route": "Status response",
+            "final_state": snapshot(status_case["case_id"])["current_state"],
+        },
+        {
+            "case_reference": access["case_reference"],
+            "subject": "WMS viewer access",
+            "request_type": "ACCESS_REQUEST",
+            "human_gate": "Assigned approval",
+            "route": "Approved access action",
+            "final_state": snapshot(access["case_id"])["current_state"],
+        },
+        {
+            "case_reference": data_change["case_reference"],
+            "subject": "Supplier data change",
+            "request_type": "DATA_CHANGE_REQUEST",
+            "human_gate": "Assigned rejection",
+            "route": "Requester notification",
+            "final_state": snapshot(data_change["case_id"])["current_state"],
+        },
+        {
+            "case_reference": missing["case_reference"],
+            "subject": "Missing incident urgency",
+            "request_type": "INCIDENT_REPORT",
+            "human_gate": "Requester information",
+            "route": "Incident ticket",
+            "final_state": snapshot(missing["case_id"])["current_state"],
+        },
+        {
+            "case_reference": review["case_reference"],
+            "subject": "Ambiguous affected service",
+            "request_type": "INCIDENT_REPORT",
+            "human_gate": "Service-agent correction",
+            "route": "Incident ticket",
+            "final_state": snapshot(review["case_id"])["current_state"],
+        },
+    ]
+    result = {
+        "schema_version": "showcase-v1",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "runtime": {
+            "ai_provider": "Controlled fixture",
+            "hosted_or_paid_ai_calls": 0,
+            "data_scope": "Fictional local data",
+        },
+        "summary": {
+            "integration_groups_passed": 7,
+            "integration_groups_total": 7,
+            "fictional_cases": int(aggregate["cases"]),
+            "completed_cases": int(aggregate["completed"]),
+            "rejected_cases": int(aggregate["rejected"]),
+            "analysis_attempts": int(aggregate["analyses"]),
+            "service_desk_records": int(sandbox_records),
+            "unfinished_work": int(aggregate["unfinished"]),
+            "duplicate_terminal_effects": 0,
+        },
+        "cases": case_results,
+        "verified_controls": [
+            "Authenticated intake and orchestration handoff",
+            "Deterministic validation before business acceptance",
+            "Requester information, service-agent correction, and assigned approval",
+            "Grounded policy citation and requester ownership isolation",
+            "Idempotent intake, action materialization, and reconciliation",
+            "Downstream Service Desk delivery, notification, and 0 unfinished work",
+        ],
+    }
+    result_path = Path(RESULT_FILE)
+    result_path.parent.mkdir(parents=True, exist_ok=True)
+    result_path.write_text(
+        json.dumps(result, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    print("  Showcase result export: PASS")

@@ -1,0 +1,2282 @@
+{
+  "status": "USER_EXECUTED_CONTROLLED_EVALUATION",
+  "contract_version": "1",
+  "run_started_at_utc": "2026-08-20T03:02:48.254737+00:00",
+  "control_resume_started_at_utc": "2026-08-20T04:01:35.208225+00:00",
+  "execution_segments": 2,
+  "resumed_partial_evidence_sha256": "a1cd541f9a1abff288fe7877319d8cc5da3a45b7b8921957da1afcaa90968b39",
+  "updated_at_utc": "2026-08-20T04:01:38.542354+00:00",
+  "corpus_file": "evaluation/locked_system_evaluation_v1.json",
+  "corpus_sha256": "17e6806295cba62a519353c7db4396eefbc0e2e07a999972520ef009b6477354",
+  "accepted_models": {
+    "analysis": "qwen3:4b-instruct@0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "embedding": "qwen3-embedding:0.6b@ac6da0dfba84a81fdbfbaf330198c33cd77c4cdfc53e8bc50eb581914a15621d"
+  },
+  "acceptance_targets": {
+    "classification_macro_f1_min": 0.9,
+    "required_field_accuracy_min": 0.9,
+    "retrieval_recall_at_3_min": 0.9,
+    "citation_validity_required": 1.0,
+    "route_accuracy_min": 0.95,
+    "semantic_task_success_min": 0.9,
+    "workflow_control_pass_rate_required": 1.0,
+    "recoverable_failure_pass_rate_required": 1.0
+  },
+  "summary": {
+    "semantic_cases": 40,
+    "workflow_control_cases": 10,
+    "classification_macro_f1": 0.9463305322128851,
+    "required_field_accuracy": 0.8828125,
+    "retrieval_recall_at_3": 0.0,
+    "citation_validity": 0.0,
+    "route_accuracy": 0.3,
+    "semantic_task_success": 0.2,
+    "workflow_control_pass_rate": 1.0,
+    "recoverable_failure_pass_rate": 1.0,
+    "median_processing_seconds": 10.2675,
+    "p95_processing_seconds": 14.984,
+    "hosted_or_paid_ai_calls": 0,
+    "gate_passed": false,
+    "cold_policy_indexing_seconds": 3.476,
+    "policy_query_embedding_batch_seconds": 2.005,
+    "local_ollama_calls": 42,
+    "current_database_evaluation_cases": 10,
+    "unfinished_outbox": 0,
+    "duplicate_terminal_effects": 0,
+    "execution_segments": 2,
+    "resume_model_calls": 0
+  },
+  "semantic_results": [
+    {
+      "case_id": "SEM-POL-01",
+      "language": "en",
+      "expected_request_type": "policy_question",
+      "predicted_request_type": "policy_question",
+      "classification_match": true,
+      "field_checks": {
+        "policy_topic": true,
+        "question": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": false,
+      "citation_valid": false,
+      "task_success": false,
+      "processing_seconds": 17.424,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 16599,
+      "input_tokens": 266,
+      "output_tokens": 202,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": "what weekly limit applies to working away from the office?",
+          "approver_id": null,
+          "policy_topic": "work location limits",
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Query on the weekly work away from office limit for Jakarta assignments.",
+        "request_type": "policy_question"
+      },
+      "evidence": [
+        {
+          "field": "policy_topic",
+          "quote": "For a Jakarta assignment"
+        },
+        {
+          "field": "question",
+          "quote": "what weekly limit applies to working away from the office?"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-POL-02",
+      "language": "id",
+      "expected_request_type": "policy_question",
+      "predicted_request_type": "policy_question",
+      "classification_match": true,
+      "field_checks": {
+        "policy_topic": true,
+        "question": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": false,
+      "citation_valid": false,
+      "task_success": false,
+      "processing_seconds": 10.358,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 10262,
+      "input_tokens": 279,
+      "output_tokens": 223,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": "Paling lambat kapan permohonan cuti tahunan harus diajukan jika cuti dimulai hari Senin?",
+          "approver_id": null,
+          "policy_topic": "cuti tahunan",
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Pertanyaan tentang batas waktu pengajuan cuti tahunan jika dimulai hari Senin.",
+        "request_type": "policy_question"
+      },
+      "evidence": [
+        {
+          "field": "question",
+          "quote": "Kalau cuti tahunan dimulai hari Senin, paling lambat kapan permohonannya harus diajukan?"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-POL-03",
+      "language": "en",
+      "expected_request_type": "policy_question",
+      "predicted_request_type": "access_request",
+      "classification_match": false,
+      "field_checks": {
+        "policy_topic": false,
+        "question": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": false,
+      "citation_valid": false,
+      "task_success": false,
+      "processing_seconds": 9.908,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 9811,
+      "input_tokens": 268,
+      "output_tokens": 208,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": "For basic viewer permission in WMS, whose approval is needed and how often is access reviewed?",
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": "WMS",
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": "basic viewer permission"
+        },
+        "summary": "Query about approval and review frequency for basic viewer access in WMS.",
+        "request_type": "access_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "WMS"
+        },
+        {
+          "field": "requested_access_level",
+          "quote": "basic viewer permission"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-POL-04",
+      "language": "id",
+      "expected_request_type": "policy_question",
+      "predicted_request_type": "policy_question",
+      "classification_match": true,
+      "field_checks": {
+        "policy_topic": true,
+        "question": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": false,
+      "citation_valid": false,
+      "task_success": false,
+      "processing_seconds": 12.046,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 11248,
+      "input_tokens": 279,
+      "output_tokens": 251,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": "Berapa lama maksimum sesi administrator sementara dan persetujuan pihak mana yang dibutuhkan?",
+          "approver_id": null,
+          "policy_topic": "admin sementara",
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Minta informasi maksimum durasi sesi administrator sementara dan persetujuan yang dibutuhkan.",
+        "request_type": "policy_question"
+      },
+      "evidence": [
+        {
+          "field": "policy_topic",
+          "quote": "Ketentuan admin sementara"
+        },
+        {
+          "field": "question",
+          "quote": "Berapa lama maksimum sesi administrator sementara dan persetujuan pihak mana yang dibutuhkan?"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-POL-05",
+      "language": "en",
+      "expected_request_type": "policy_question",
+      "predicted_request_type": "INVALID",
+      "classification_match": false,
+      "field_checks": {
+        "policy_topic": false,
+        "question": false
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": false,
+      "citation_valid": false,
+      "task_success": false,
+      "processing_seconds": 9.591,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 9500,
+      "input_tokens": 265,
+      "output_tokens": 206,
+      "proposal": {
+        "error": {
+          "code": "INVALID_PROVIDER_OUTPUT",
+          "raw_output_sha256": "5473be500d25995d3531246e59449d361ca18dc5714acf3038733b160a5b06af"
+        }
+      },
+      "evidence": []
+    },
+    {
+      "case_id": "SEM-POL-06",
+      "language": "id",
+      "expected_request_type": "policy_question",
+      "predicted_request_type": "policy_question",
+      "classification_match": true,
+      "field_checks": {
+        "policy_topic": false,
+        "question": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": false,
+      "citation_valid": false,
+      "task_success": false,
+      "processing_seconds": 10.381,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 10286,
+      "input_tokens": 281,
+      "output_tokens": 224,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": "Jalur serta batas waktu pelaporannya apa?",
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": "Hanya saya yang bermasalah dan masih ada cara kerja alternatif",
+          "requested_access_level": null
+        },
+        "summary": "Pertanyaan tentang jalur dan batas waktu pelaporan gangguan untuk satu pengguna yang mengalami masalah, dengan indikasi adanya cara kerja alternatif.",
+        "request_type": "policy_question"
+      },
+      "evidence": [
+        {
+          "field": "incident_description",
+          "quote": "Hanya saya yang bermasalah dan masih ada cara kerja alternatif"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-POL-07",
+      "language": "en",
+      "expected_request_type": "policy_question",
+      "predicted_request_type": "policy_question",
+      "classification_match": true,
+      "field_checks": {
+        "policy_topic": true,
+        "question": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": false,
+      "citation_valid": false,
+      "task_success": false,
+      "processing_seconds": 9.314,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 9217,
+      "input_tokens": 268,
+      "output_tokens": 201,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": "how long do uploaded files remain when there is no legal hold?",
+          "approver_id": null,
+          "policy_topic": "retention of uploaded files after case closure",
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": "so that",
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Clarifying retention period for uploaded files after case closure without a legal hold.",
+        "request_type": "policy_question"
+      },
+      "evidence": [
+        {
+          "field": "policy_topic",
+          "quote": "After closing a service case, how long do uploaded files remain when there there is no legal hold?"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-POL-08",
+      "language": "id",
+      "expected_request_type": "policy_question",
+      "predicted_request_type": "policy_question",
+      "classification_match": true,
+      "field_checks": {
+        "policy_topic": false,
+        "question": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": false,
+      "citation_valid": false,
+      "task_success": false,
+      "processing_seconds": 12.542,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 11739,
+      "input_tokens": 287,
+      "output_tokens": 245,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": "berapa faktor identitas yang perlu diperiksa dan informasi apa yang dilarang diminta?",
+          "approver_id": null,
+          "policy_topic": "Authentication",
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Pertanyaan tentang jumlah faktor identitas yang harus diperiksa sebelum reset kata sandi dan informasi yang dilarang diminta.",
+        "request_type": "policy_question"
+      },
+      "evidence": [
+        {
+          "field": "policy_topic",
+          "quote": "Sebelum reset kata sandi"
+        },
+        {
+          "field": "question",
+          "quote": "berapa faktor identitas yang perlu diperiksa dan informasi apa yang dilarang diminta?"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-INC-01",
+      "language": "en",
+      "expected_request_type": "incident_report",
+      "predicted_request_type": "incident_report",
+      "classification_match": true,
+      "field_checks": {
+        "affected_service": true,
+        "incident_description": true,
+        "impact": true,
+        "urgency": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 11.003,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 10908,
+      "input_tokens": 274,
+      "output_tokens": 241,
+      "proposal": {
+        "fields": {
+          "impact": "high",
+          "urgency": "high",
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": "WMS packing",
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": "WMS packing screens have been unavailable since 08:40 for the entire warehouse.",
+          "requested_access_level": null
+        },
+        "summary": "WMS packing screens unavailable since 08:40; high impact and urgency.",
+        "request_type": "incident_report"
+      },
+      "evidence": [
+        {
+          "field": "incident_description",
+          "quote": "WMS packing screens have been unavailable since 08:40 for the entire warehouse."
+        },
+        {
+          "field": "impact",
+          "quote": "Impact high"
+        },
+        {
+          "field": "urgency",
+          "quote": "urgency high"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-INC-02",
+      "language": "id",
+      "expected_request_type": "incident_report",
+      "predicted_request_type": "incident_report",
+      "classification_match": true,
+      "field_checks": {
+        "affected_service": true,
+        "incident_description": true,
+        "impact": true,
+        "urgency": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 11.243,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 11137,
+      "input_tokens": 275,
+      "output_tokens": 242,
+      "proposal": {
+        "fields": {
+          "impact": "medium",
+          "urgency": "medium",
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": "CRM",
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": "CRM gagal menyimpan catatan panggilan untuk 12 agen",
+          "requested_access_level": null
+        },
+        "summary": "CRM tidak dapat menyimpan catatan panggilan untuk 12 agen dengan dampak dan urgensi sedang.",
+        "request_type": "incident_report"
+      },
+      "evidence": [
+        {
+          "field": "incident_description",
+          "quote": "CRM gagal menyimpan catatan panggilan untuk 12 agen"
+        },
+        {
+          "field": "impact",
+          "quote": "Impact medium"
+        },
+        {
+          "field": "urgency",
+          "quote": "urgency medium"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-INC-03",
+      "language": "en",
+      "expected_request_type": "incident_report",
+      "predicted_request_type": "incident_report",
+      "classification_match": true,
+      "field_checks": {
+        "affected_service": true,
+        "incident_description": true,
+        "impact": true,
+        "urgency": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 9.163,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 9053,
+      "input_tokens": 271,
+      "output_tokens": 194,
+      "proposal": {
+        "fields": {
+          "impact": "low",
+          "urgency": "low",
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": "HRIS",
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": "HRIS leave page times out for one employee, but payroll features work",
+          "requested_access_level": null
+        },
+        "summary": "HRIS leave page times out for one employee; payroll features unaffected. Impact and urgency both low.",
+        "request_type": "incident_report"
+      },
+      "evidence": [
+        {
+          "field": "incident_description",
+          "quote": "HRIS leave page times out for one employee, but payroll features work"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-INC-04",
+      "language": "id",
+      "expected_request_type": "incident_report",
+      "predicted_request_type": "incident_report",
+      "classification_match": true,
+      "field_checks": {
+        "affected_service": true,
+        "incident_description": true,
+        "impact": true,
+        "urgency": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 11.956,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 11853,
+      "input_tokens": 282,
+      "output_tokens": 264,
+      "proposal": {
+        "fields": {
+          "impact": "critical",
+          "urgency": "high",
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": "WMS",
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": "Semua staf gudang tidak bisa login ke WMS sejak 10.00.",
+          "requested_access_level": null
+        },
+        "summary": "Semua staf gudang tidak bisa login ke WMS sejak pukul 10.00. Dampak kritis dan urgensi tinggi.",
+        "request_type": "incident_report"
+      },
+      "evidence": [
+        {
+          "field": "incident_description",
+          "quote": "Semua staf gudang tidak bisa login ke WMS sejak 10.00."
+        },
+        {
+          "field": "impact",
+          "quote": "Impact critical"
+        },
+        {
+          "field": "urgency",
+          "quote": "urgency high"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-INC-05",
+      "language": "en",
+      "expected_request_type": "incident_report",
+      "predicted_request_type": "incident_report",
+      "classification_match": true,
+      "field_checks": {
+        "affected_service": true,
+        "incident_description": true,
+        "impact": true,
+        "urgency": true
+      },
+      "expected_state": "NEEDS_INFORMATION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 7.073,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 6965,
+      "input_tokens": 262,
+      "output_tokens": 146,
+      "proposal": {
+        "fields": {
+          "impact": "medium",
+          "urgency": null,
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": "CRM",
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": "customer search returns blank results for the sales team",
+          "requested_access_level": null
+        },
+        "summary": "CRM search returns no results for sales team; impact is medium.",
+        "request_type": "incident_report"
+      },
+      "evidence": []
+    },
+    {
+      "case_id": "SEM-INC-06",
+      "language": "en",
+      "expected_request_type": "incident_report",
+      "predicted_request_type": "INVALID",
+      "classification_match": false,
+      "field_checks": {
+        "affected_service": false,
+        "incident_description": false,
+        "urgency": false,
+        "impact": true
+      },
+      "expected_state": "NEEDS_INFORMATION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 9.764,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 9667,
+      "input_tokens": 261,
+      "output_tokens": 214,
+      "proposal": {
+        "error": {
+          "code": "INVALID_PROVIDER_OUTPUT",
+          "raw_output_sha256": "5982d00c02f9e6112475271b135cd96f52b60d431937c7e5ccf8e721c9ac465b"
+        }
+      },
+      "evidence": []
+    },
+    {
+      "case_id": "SEM-INC-07",
+      "language": "en",
+      "expected_request_type": "incident_report",
+      "predicted_request_type": "incident_report",
+      "classification_match": true,
+      "field_checks": {
+        "affected_service": true,
+        "incident_description": true,
+        "impact": true,
+        "urgency": true
+      },
+      "expected_state": "NEEDS_REVIEW",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": true,
+      "processing_seconds": 9.85,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 9758,
+      "input_tokens": 262,
+      "output_tokens": 213,
+      "proposal": {
+        "fields": {
+          "impact": "medium",
+          "urgency": "low",
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": "Vendor Hub",
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": "The Vendor Hub is slow for purchasing.",
+          "requested_access_level": null
+        },
+        "summary": "Vendor Hub is slow for purchasing with medium impact and low urgency.",
+        "request_type": "incident_report"
+      },
+      "evidence": [
+        {
+          "field": "incident_description",
+          "quote": "The Vendor Hub is slow for purchasing."
+        },
+        {
+          "field": "impact",
+          "quote": "Impact medium"
+        },
+        {
+          "field": "urgency",
+          "quote": "urgency low"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-INC-08",
+      "language": "id",
+      "expected_request_type": "incident_report",
+      "predicted_request_type": "incident_report",
+      "classification_match": true,
+      "field_checks": {
+        "affected_service": true,
+        "incident_description": true,
+        "impact": true,
+        "urgency": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 10.227,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 10134,
+      "input_tokens": 275,
+      "output_tokens": 224,
+      "proposal": {
+        "fields": {
+          "impact": "low",
+          "urgency": "medium",
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": "WMS",
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": "WMS lemot saat mencetak label",
+          "requested_access_level": null
+        },
+        "summary": "WMS experiencing slow performance during label printing, affecting 3 operators. Impact is low, urgency is medium.",
+        "request_type": "incident_report"
+      },
+      "evidence": [
+        {
+          "field": "incident_description",
+          "quote": "WMS lemot saat mencetak label"
+        },
+        {
+          "field": "impact",
+          "quote": "Impact low"
+        },
+        {
+          "field": "urgency",
+          "quote": "urgency medium"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-ACC-01",
+      "language": "en",
+      "expected_request_type": "access_request",
+      "predicted_request_type": "access_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "requested_access_level": false,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "PENDING_APPROVAL",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 8.824,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 8720,
+      "input_tokens": 272,
+      "output_tokens": 179,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-104",
+          "policy_topic": null,
+          "target_system": "WMS viewer",
+          "case_reference": null,
+          "business_reason": "because I reconcile month-end inventory",
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Request for WMS viewer access to support month-end inventory reconciliation.",
+        "request_type": "access_request"
+      },
+      "evidence": [
+        {
+          "field": "business_reason",
+          "quote": "because I reconcile month-end inventory"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-ACC-02",
+      "language": "id",
+      "expected_request_type": "access_request",
+      "predicted_request_type": "access_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "requested_access_level": false,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "PENDING_APPROVAL",
+      "final_state": "NEEDS_INFORMATION",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 12.308,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 12214,
+      "input_tokens": 281,
+      "output_tokens": 264,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-104",
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": "agar saya dapat memperbaiki koreksi stok harian",
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Permintaan akses editor untuk sistem WMS untuk memperbaiki koreksi stok harian. Approver: MGR-104.",
+        "request_type": "access_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "akses editor WMS"
+        },
+        {
+          "field": "business_reason",
+          "quote": "agar saya dapat memperbaiki koreksi stok harian"
+        },
+        {
+          "field": "approver_id",
+          "quote": "Approver MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-ACC-03",
+      "language": "en",
+      "expected_request_type": "access_request",
+      "predicted_request_type": "access_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "requested_access_level": true,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "NEEDS_INFORMATION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 9.298,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 9200,
+      "input_tokens": 263,
+      "output_tokens": 196,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": "so I can inspect weekly audit exceptions",
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": "viewer"
+        },
+        "summary": "Request for WMS viewer access to inspect weekly audit exceptions.",
+        "request_type": "access_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "WMS viewer access"
+        },
+        {
+          "field": "business_reason",
+          "quote": "so I can inspect weekly audit exceptions"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-ACC-04",
+      "language": "en",
+      "expected_request_type": "access_request",
+      "predicted_request_type": "access_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "requested_access_level": true,
+        "approver_id": false,
+        "business_reason": true
+      },
+      "expected_state": "NEEDS_INFORMATION",
+      "final_state": "NEEDS_INFORMATION",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 10.308,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 10197,
+      "input_tokens": 267,
+      "output_tokens": 221,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-10",
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": "temporary viewer"
+        },
+        "summary": "Request for temporary viewer access to WMS. Approver: MGR-104.",
+        "request_type": "access_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "WMS"
+        },
+        {
+          "field": "requested_access_level",
+          "quote": "temporary viewer"
+        },
+        {
+          "field": "approver_id",
+          "quote": "MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-ACC-05",
+      "language": "en",
+      "expected_request_type": "access_request",
+      "predicted_request_type": "access_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "requested_access_level": false,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "NEEDS_REVIEW",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 9.443,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 9330,
+      "input_tokens": 269,
+      "output_tokens": 204,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-104",
+          "policy_topic": null,
+          "target_system": "CRM",
+          "case_reference": null,
+          "business_reason": "because I prepare the weekly pipeline review",
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Request for CRM viewer access to support weekly pipeline review.",
+        "request_type": "access_request"
+      },
+      "evidence": [
+        {
+          "field": "business_reason",
+          "quote": "because I prepare the weekly pipeline review"
+        },
+        {
+          "field": "approver_id",
+          "quote": "Approver MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-ACC-06",
+      "language": "en",
+      "expected_request_type": "access_request",
+      "predicted_request_type": "access_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "requested_access_level": false,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "NEEDS_REVIEW",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 8.487,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 8381,
+      "input_tokens": 268,
+      "output_tokens": 174,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-104",
+          "policy_topic": null,
+          "target_system": "Finance Hub",
+          "case_reference": null,
+          "business_reason": "because I check expense summaries",
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Request for Finance Hub viewer access to check expense summaries.",
+        "request_type": "access_request"
+      },
+      "evidence": [
+        {
+          "field": "business_reason",
+          "quote": "because I check expense summaries"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-ACC-07",
+      "language": "en",
+      "expected_request_type": "access_request",
+      "predicted_request_type": "access_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "requested_access_level": true,
+        "business_reason": true,
+        "approver_id": false
+      },
+      "expected_state": "PENDING_APPROVAL",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 11.722,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 11613,
+      "input_tokens": 273,
+      "output_tokens": 257,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-10",
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": "because I must validate a recovery drill",
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": "temporary administrator"
+        },
+        "summary": "Request for temporary administrator access to WMS to validate a recovery drill. Approved by MGR-104.",
+        "request_type": "access_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "WMS"
+        },
+        {
+          "field": "requested_access_level",
+          "quote": "temporary administrator"
+        },
+        {
+          "field": "business_reason",
+          "quote": "because I must validate a recovery drill"
+        },
+        {
+          "field": "approver_id",
+          "quote": "MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-ACC-08",
+      "language": "id",
+      "expected_request_type": "access_request",
+      "predicted_request_type": "access_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "requested_access_level": true,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "PENDING_APPROVAL",
+      "final_state": "PENDING_APPROVAL",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": true,
+      "processing_seconds": 12.526,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 12409,
+      "input_tokens": 282,
+      "output_tokens": 273,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-104",
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": "untuk membuat laporan selisih inventaris",
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": "read-only"
+        },
+        "summary": "Permintaan akses baca-only WMS untuk membuat laporan selisih inventaris, disetujui oleh MGR-104.",
+        "request_type": "access_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "WMS"
+        },
+        {
+          "field": "requested_access_level",
+          "quote": "read-only"
+        },
+        {
+          "field": "business_reason",
+          "quote": "untuk membuat laporan selisih inventaris"
+        },
+        {
+          "field": "approver_id",
+          "quote": "MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-DAT-01",
+      "language": "en",
+      "expected_request_type": "data_change_request",
+      "predicted_request_type": "data_change_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "record_reference": true,
+        "requested_changes": true,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "PENDING_APPROVAL",
+      "final_state": "PENDING_APPROVAL",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": true,
+      "processing_seconds": 14.31,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 14205,
+      "input_tokens": 281,
+      "output_tokens": 317,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-104",
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": "based on the verified bank letter",
+          "affected_service": null,
+          "record_reference": "SUP-771",
+          "requested_changes": "change supplier SUP-771 to bank route TEST-17",
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Update supplier SUP-771 in WMS to bank route TEST-17 based on verified bank letter. Approved by MGR-104.",
+        "request_type": "data_change_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "WMS"
+        },
+        {
+          "field": "record_reference",
+          "quote": "SUP-771"
+        },
+        {
+          "field": "requested_changes",
+          "quote": "change supplier SUP-771 to bank route TEST-17"
+        },
+        {
+          "field": "business_reason",
+          "quote": "based on the verified bank letter"
+        },
+        {
+          "field": "approver_id",
+          "quote": "MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-DAT-02",
+      "language": "id",
+      "expected_request_type": "data_change_request",
+      "predicted_request_type": "data_change_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "record_reference": true,
+        "requested_changes": true,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "PENDING_APPROVAL",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 14.984,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 14883,
+      "input_tokens": 285,
+      "output_tokens": 333,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-104",
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": "karena hasil review stok sudah disetujui",
+          "affected_service": "WMS",
+          "record_reference": "SKU-442",
+          "requested_changes": "ubah reorder point SKU-442 menjadi 18",
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Ubah reorder point SKU-442 di WMS menjadi 18 karena hasil review stok sudah disetujui. Approver: MGR-104.",
+        "request_type": "data_change_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "Di WMS"
+        },
+        {
+          "field": "record_reference",
+          "quote": "SKU-442"
+        },
+        {
+          "field": "requested_changes",
+          "quote": "ubah reorder point SKU-442 menjadi 18"
+        },
+        {
+          "field": "business_reason",
+          "quote": "karena hasil review stok sudah disetujui"
+        },
+        {
+          "field": "approver_id",
+          "quote": "MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-DAT-03",
+      "language": "en",
+      "expected_request_type": "data_change_request",
+      "predicted_request_type": "data_change_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "record_reference": true,
+        "requested_changes": true,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "NEEDS_INFORMATION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 9.61,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 9510,
+      "input_tokens": 273,
+      "output_tokens": 203,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": "because the verified count sheet shows the correction",
+          "affected_service": "WMS",
+          "record_reference": "SKU-808",
+          "requested_changes": "change item SKU-808 to bin B-19",
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Update SKU-808 bin location to B-19 in WMS based on verified count sheet.",
+        "request_type": "data_change_request"
+      },
+      "evidence": [
+        {
+          "field": "policy_topic",
+          "quote": "because the verified count sheet shows the correction"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-DAT-04",
+      "language": "en",
+      "expected_request_type": "data_change_request",
+      "predicted_request_type": "data_change_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "record_reference": true,
+        "requested_changes": true,
+        "approver_id": false,
+        "business_reason": true
+      },
+      "expected_state": "NEEDS_INFORMATION",
+      "final_state": "NEEDS_INFORMATION",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 12.557,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 12458,
+      "input_tokens": 271,
+      "output_tokens": 268,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-10",
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": "LOC-14",
+          "requested_changes": "change location LOC-14 to zone C3",
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Change warehouse location LOC-14 to zone C3 in WMS. Approved by MGR-104.",
+        "request_type": "data_change_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "WMS"
+        },
+        {
+          "field": "record_reference",
+          "quote": "LOC-14"
+        },
+        {
+          "field": "requested_changes",
+          "quote": "change location LOC-14 to zone C3"
+        },
+        {
+          "field": "approver_id",
+          "quote": "MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-DAT-05",
+      "language": "en",
+      "expected_request_type": "data_change_request",
+      "predicted_request_type": "data_change_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "record_reference": true,
+        "requested_changes": true,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "NEEDS_REVIEW",
+      "final_state": "REJECTED",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 13.588,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 13487,
+      "input_tokens": 280,
+      "output_tokens": 298,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-104",
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": "because the approved inventory form requires it",
+          "affected_service": null,
+          "record_reference": "SKU-710",
+          "requested_changes": "item SKU-710 to status ACTIVE",
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Change SKU-710 status to ACTIVE in WMS due to approved inventory form requirement.",
+        "request_type": "data_change_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "WMS"
+        },
+        {
+          "field": "record_reference",
+          "quote": "SKU-710"
+        },
+        {
+          "field": "requested_changes",
+          "quote": "item SKU-710 to status ACTIVE"
+        },
+        {
+          "field": "business_reason",
+          "quote": "because the approved inventory form requires it"
+        },
+        {
+          "field": "approver_id",
+          "quote": "MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-DAT-06",
+      "language": "en",
+      "expected_request_type": "data_change_request",
+      "predicted_request_type": "data_change_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "record_reference": true,
+        "requested_changes": true,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "NEEDS_REVIEW",
+      "final_state": "REJECTED",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 13.405,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 13299,
+      "input_tokens": 279,
+      "output_tokens": 294,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-104",
+          "policy_topic": null,
+          "target_system": "CRM",
+          "case_reference": null,
+          "business_reason": "because the signed commercial review approved it",
+          "affected_service": null,
+          "record_reference": "CUST-330",
+          "requested_changes": "to tier GOLD",
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Change CRM account CUST-330 to tier GOLD due to approved commercial review. Approved by MGR-104.",
+        "request_type": "data_change_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "CRM"
+        },
+        {
+          "field": "record_reference",
+          "quote": "CUST-330"
+        },
+        {
+          "field": "requested_changes",
+          "quote": "to tier GOLD"
+        },
+        {
+          "field": "business_reason",
+          "quote": "because the signed commercial review approved it"
+        },
+        {
+          "field": "approver_id",
+          "quote": "MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-DAT-07",
+      "language": "en",
+      "expected_request_type": "data_change_request",
+      "predicted_request_type": "data_change_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "record_reference": true,
+        "requested_changes": true,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "NEEDS_REVIEW",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": true,
+      "processing_seconds": 13.993,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 13889,
+      "input_tokens": 277,
+      "output_tokens": 308,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-104",
+          "policy_topic": null,
+          "target_system": "Billing Hub",
+          "case_reference": null,
+          "business_reason": "because finance verified the receipt",
+          "affected_service": null,
+          "record_reference": "INV-909",
+          "requested_changes": "change invoice INV-909 to status REVIEWED",
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Change invoice INV-909 status to REVIEWED in Billing Hub because finance verified the receipt. Approved by MGR-104.",
+        "request_type": "data_change_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "Billing Hub"
+        },
+        {
+          "field": "record_reference",
+          "quote": "INV-909"
+        },
+        {
+          "field": "requested_changes",
+          "quote": "change invoice INV-909 to status REVIEWED"
+        },
+        {
+          "field": "business_reason",
+          "quote": "because finance verified the receipt"
+        },
+        {
+          "field": "approver_id",
+          "quote": "MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-DAT-08",
+      "language": "id",
+      "expected_request_type": "data_change_request",
+      "predicted_request_type": "data_change_request",
+      "classification_match": true,
+      "field_checks": {
+        "target_system": true,
+        "record_reference": true,
+        "requested_changes": true,
+        "business_reason": true,
+        "approver_id": true
+      },
+      "expected_state": "PENDING_APPROVAL",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 15.135,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 15029,
+      "input_tokens": 288,
+      "output_tokens": 335,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": "MGR-104",
+          "policy_topic": null,
+          "target_system": "WMS",
+          "case_reference": null,
+          "business_reason": "berdasarkan formulir perubahan yang sudah diverifikasi",
+          "affected_service": "WMS",
+          "record_reference": "LOC-22",
+          "requested_changes": "ubah nama LOC-22 menjadi Gudang Timur",
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Ubah nama lokasi LOC-22 menjadi Gudang Timur di WMS berdasarkan formulir perubahan yang sudah diverifikasi. Approver: MGR-104.",
+        "request_type": "data_change_request"
+      },
+      "evidence": [
+        {
+          "field": "target_system",
+          "quote": "Di WMS"
+        },
+        {
+          "field": "record_reference",
+          "quote": "LOC-22"
+        },
+        {
+          "field": "requested_changes",
+          "quote": "ubah nama LOC-22 menjadi Gudang Timur"
+        },
+        {
+          "field": "business_reason",
+          "quote": "berdasarkan formulir perubahan yang sudah diverifikasi"
+        },
+        {
+          "field": "approver_id",
+          "quote": "MGR-104"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-STA-01",
+      "language": "en",
+      "expected_request_type": "status_request",
+      "predicted_request_type": "status_request",
+      "classification_match": true,
+      "field_checks": {
+        "case_reference": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 9.412,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 9311,
+      "input_tokens": 269,
+      "output_tokens": 202,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": "What is the current progress of CASE-2026-0001?",
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": "CASE-2026-0001",
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Request for current progress of case CASE-2026-0001.",
+        "request_type": "status_request"
+      },
+      "evidence": [
+        {
+          "field": "case_reference",
+          "quote": "CASE-2026-0001"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-STA-02",
+      "language": "en",
+      "expected_request_type": "status_request",
+      "predicted_request_type": "status_request",
+      "classification_match": true,
+      "field_checks": {
+        "case_reference": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "READY_FOR_ACTION",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": true,
+      "processing_seconds": 8.716,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 8619,
+      "input_tokens": 267,
+      "output_tokens": 186,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": "CASE-2026-0002",
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Request for the latest status of case CASE-2026-0002.",
+        "request_type": "status_request"
+      },
+      "evidence": [
+        {
+          "field": "case_reference",
+          "quote": "CASE-2026-0002"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-STA-03",
+      "language": "en",
+      "expected_request_type": "status_request",
+      "predicted_request_type": "status_request",
+      "classification_match": true,
+      "field_checks": {
+        "case_reference": true
+      },
+      "expected_state": "NEEDS_REVIEW",
+      "final_state": "REJECTED",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 8.729,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 8632,
+      "input_tokens": 265,
+      "output_tokens": 183,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": "CASE-2026-0002",
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Request status for case CASE-2026-0002.",
+        "request_type": "status_request"
+      },
+      "evidence": [
+        {
+          "field": "case_reference",
+          "quote": "CASE-2026-0002"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-STA-04",
+      "language": "en",
+      "expected_request_type": "status_request",
+      "predicted_request_type": "status_request",
+      "classification_match": true,
+      "field_checks": {
+        "case_reference": true
+      },
+      "expected_state": "NEEDS_REVIEW",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": true,
+      "processing_seconds": 11.713,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 11614,
+      "input_tokens": 266,
+      "output_tokens": 205,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": "What stage has CASE-2026-0001 reached?",
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": "CASE-2026-0001",
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Inquiry about the current stage of case CASE-2026-0001.",
+        "request_type": "status_request"
+      },
+      "evidence": [
+        {
+          "field": "question",
+          "quote": "What stage has CASE-2026-0001 reached?"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-STA-05",
+      "language": "en",
+      "expected_request_type": "status_request",
+      "predicted_request_type": "status_request",
+      "classification_match": true,
+      "field_checks": {
+        "case_reference": true
+      },
+      "expected_state": "NEEDS_INFORMATION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 8.157,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 8051,
+      "input_tokens": 254,
+      "output_tokens": 168,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": "Where is my service request now?",
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": null,
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "User is asking for the current status of their service request.",
+        "request_type": "status_request"
+      },
+      "evidence": [
+        {
+          "field": "question",
+          "quote": "Where is my service request now?"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-STA-06",
+      "language": "en",
+      "expected_request_type": "status_request",
+      "predicted_request_type": "status_request",
+      "classification_match": true,
+      "field_checks": {
+        "case_reference": true
+      },
+      "expected_state": "NEEDS_REVIEW",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": true,
+      "processing_seconds": 8.705,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 8601,
+      "input_tokens": 264,
+      "output_tokens": 184,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": "CASE-2026-9999",
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Check the status of case CASE-2026-9999.",
+        "request_type": "status_request"
+      },
+      "evidence": [
+        {
+          "field": "case_reference",
+          "quote": "CASE-2026-9999"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-STA-07",
+      "language": "id",
+      "expected_request_type": "status_request",
+      "predicted_request_type": "status_request",
+      "classification_match": true,
+      "field_checks": {
+        "case_reference": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "READY_FOR_ACTION",
+      "route_match": true,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": true,
+      "processing_seconds": 8.851,
+      "analysis_status": "COMPLETED",
+      "analysis_wall_time_ms": 8734,
+      "input_tokens": 274,
+      "output_tokens": 186,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": null,
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": "CASE-2026-0001",
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Permintaan status untuk kasus CASE-2026-0001.",
+        "request_type": "status_request"
+      },
+      "evidence": [
+        {
+          "field": "case_reference",
+          "quote": "CASE-2026-0001"
+        }
+      ]
+    },
+    {
+      "case_id": "SEM-STA-08",
+      "language": "id",
+      "expected_request_type": "status_request",
+      "predicted_request_type": "status_request",
+      "classification_match": true,
+      "field_checks": {
+        "case_reference": true
+      },
+      "expected_state": "READY_FOR_ACTION",
+      "final_state": "NEEDS_REVIEW",
+      "route_match": false,
+      "retrieved_chunk_ids": [],
+      "citation_ids": [],
+      "retrieval_hit_at_3": null,
+      "citation_valid": null,
+      "task_success": false,
+      "processing_seconds": 10.124,
+      "analysis_status": "INVALID_OUTPUT",
+      "analysis_wall_time_ms": 10026,
+      "input_tokens": 276,
+      "output_tokens": 221,
+      "proposal": {
+        "fields": {
+          "impact": null,
+          "urgency": null,
+          "question": "Sudah sampai tahap apa kasus saya CASE-2026-0002?",
+          "approver_id": null,
+          "policy_topic": null,
+          "target_system": null,
+          "case_reference": "CASE-2026-0002",
+          "business_reason": null,
+          "affected_service": null,
+          "record_reference": null,
+          "requested_changes": null,
+          "incident_description": null,
+          "requested_access_level": null
+        },
+        "summary": "Pertanyaan tentang tahap perkembangan insiden gudang dengan referensi kasus CASE-2026-0002.",
+        "request_type": "status_request"
+      },
+      "evidence": [
+        {
+          "field": "case_reference",
+          "quote": "CASE-2026-0002"
+        }
+      ]
+    }
+  ],
+  "workflow_control_results": [
+    {
+      "case_id": "CTL-01",
+      "control": "exact_intake_replay",
+      "passed": true
+    },
+    {
+      "case_id": "CTL-02",
+      "control": "idempotency_conflict",
+      "passed": true
+    },
+    {
+      "case_id": "CTL-03",
+      "control": "possible_duplicate_isolated",
+      "passed": true
+    },
+    {
+      "case_id": "CTL-04",
+      "control": "analysis_exact_replay",
+      "passed": true
+    },
+    {
+      "case_id": "CTL-05",
+      "control": "downstream_exact_replay",
+      "passed": true
+    },
+    {
+      "case_id": "CTL-06",
+      "control": "approval_approved",
+      "passed": true
+    },
+    {
+      "case_id": "CTL-07",
+      "control": "approval_rejected",
+      "passed": true
+    },
+    {
+      "case_id": "CTL-08",
+      "control": "transient_delivery_retry",
+      "passed": true
+    },
+    {
+      "case_id": "CTL-09",
+      "control": "permanent_delivery_failure",
+      "passed": true
+    },
+    {
+      "case_id": "CTL-10",
+      "control": "expired_claim_recovery",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+[
+  {
+    "case_id": "policy-english-clear",
+    "subject": "Remote-work policy",
+    "message": "What is the maximum number of remote-work days allowed each week for employees in Jakarta?",
+    "expected_request_type": "policy_question",
+    "expected_keywords": {
+      "policy_topic": ["remote", "work"],
+      "question": ["maximum", "remote", "days", "week"]
+    },
+    "must_be_null": [],
+    "expected_missing_fields": []
+  },
+  {
+    "case_id": "policy-indonesian-paraphrase",
+    "subject": "Aturan cuti tahunan",
+    "message": "Saya ingin tahu prosedur pengajuan cuti tahunan dan berapa hari sebelumnya permohonan harus dikirim.",
+    "expected_request_type": "policy_question",
+    "expected_keywords": {
+      "policy_topic": ["cuti", "tahunan"],
+      "question": ["prosedur", "cuti", "hari"]
+    },
+    "must_be_null": [],
+    "expected_missing_fields": []
+  },
+  {
+    "case_id": "incident-english-clear",
+    "subject": "Customer portal login outage",
+    "message": "The customer portal has rejected every login since 09:15. All customers are affected and cannot access their accounts. Impact is high and urgency is high.",
+    "expected_request_type": "incident_report",
+    "expected_keywords": {
+      "affected_service": ["customer", "portal"],
+      "incident_description": ["login"],
+      "impact": ["high"],
+      "urgency": ["high"]
+    },
+    "must_be_null": [],
+    "expected_missing_fields": []
+  },
+  {
+    "case_id": "incident-indonesian-informal",
+    "subject": "Scanner gudang tidak bisa dipakai",
+    "message": "Sejak jam 14.00 WMS gudang tidak menerima hasil scan barang. Delapan operator terdampak. Impact medium dan urgency medium.",
+    "expected_request_type": "incident_report",
+    "expected_keywords": {
+      "affected_service": ["wms"],
+      "incident_description": ["scan"],
+      "impact": ["medium"],
+      "urgency": ["medium"]
+    },
+    "must_be_null": [],
+    "expected_missing_fields": []
+  },
+  {
+    "case_id": "access-english-complete",
+    "subject": "Read-only sales dashboard access",
+    "message": "Please grant me read-only access to the Sales Dashboard so I can prepare the weekly regional report. My approver is MGR-104.",
+    "expected_request_type": "access_request",
+    "expected_keywords": {
+      "target_system": ["sales", "dashboard"],
+      "requested_access_level": ["read", "only"],
+      "business_reason": ["weekly", "regional", "report"],
+      "approver_id": ["mgr", "104"]
+    },
+    "must_be_null": [],
+    "expected_missing_fields": []
+  },
+  {
+    "case_id": "access-indonesian-missing-approver",
+    "subject": "Akses aplikasi inventaris",
+    "message": "Tolong berikan akses editor ke aplikasi Inventaris agar saya dapat memperbarui stok cabang Surabaya.",
+    "expected_request_type": "access_request",
+    "expected_keywords": {
+      "target_system": ["inventaris"],
+      "requested_access_level": ["editor"],
+      "business_reason": ["stok", "surabaya"]
+    },
+    "must_be_null": ["approver_id"],
+    "expected_missing_fields": ["approver_id"]
+  },
+  {
+    "case_id": "data-change-english-complete",
+    "subject": "Supplier bank account correction",
+    "message": "Update supplier SUP-204 in the Supplier Registry. Change the bank account to 0123456789 based on the verified bank letter. Approver: MGR-220.",
+    "expected_request_type": "data_change_request",
+    "expected_keywords": {
+      "target_system": ["supplier", "registry"],
+      "record_reference": ["sup", "204"],
+      "requested_changes": ["0123456789"],
+      "business_reason": ["verified", "bank", "letter"],
+      "approver_id": ["mgr", "220"]
+    },
+    "must_be_null": [],
+    "expected_missing_fields": []
+  },
+  {
+    "case_id": "data-change-indonesian-complete",
+    "subject": "Perubahan alamat pelanggan",
+    "message": "Mohon ubah alamat pelanggan CUST-881 di Customer Master menjadi Jalan Pemuda 18, Surabaya karena formulir perubahan data sudah diverifikasi. Persetujuan dari MGR-310.",
+    "expected_request_type": "data_change_request",
+    "expected_keywords": {
+      "target_system": ["customer", "master"],
+      "record_reference": ["cust", "881"],
+      "requested_changes": ["jalan", "pemuda", "18"],
+      "business_reason": ["diverifikasi"],
+      "approver_id": ["mgr", "310"]
+    },
+    "must_be_null": [],
+    "expected_missing_fields": []
+  },
+  {
+    "case_id": "status-english-clear",
+    "subject": "Status of my access request",
+    "message": "Please tell me the current status of case CASE-2026-0042.",
+    "expected_request_type": "status_request",
+    "expected_keywords": {
+      "case_reference": ["case", "2026", "0042"]
+    },
+    "must_be_null": [],
+    "expected_missing_fields": []
+  },
+  {
+    "case_id": "status-indonesian-clear",
+    "subject": "Cek permintaan sebelumnya",
+    "message": "Bagaimana perkembangan tiket CASE-2026-0099 yang saya ajukan kemarin?",
+    "expected_request_type": "status_request",
+    "expected_keywords": {
+      "case_reference": ["case", "2026", "0099"]
+    },
+    "must_be_null": [],
+    "expected_missing_fields": []
+  }
+]

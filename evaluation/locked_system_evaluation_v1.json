@@ -1,0 +1,809 @@
+{
+  "contract_version": "1",
+  "locked_at_utc": "2026-08-20T00:00:00Z",
+  "description": "Fictional, post-selection system evaluation. These cases are not training data and are distinct from the model and embedding suitability prompts.",
+  "accepted_models": {
+    "analysis": "qwen3:4b-instruct",
+    "embedding": "qwen3-embedding:0.6b"
+  },
+  "acceptance_targets": {
+    "classification_macro_f1_min": 0.9,
+    "required_field_accuracy_min": 0.9,
+    "retrieval_recall_at_3_min": 0.9,
+    "citation_validity_required": 1.0,
+    "route_accuracy_min": 0.95,
+    "semantic_task_success_min": 0.9,
+    "workflow_control_pass_rate_required": 1.0,
+    "recoverable_failure_pass_rate_required": 1.0
+  },
+  "semantic_cases": [
+    {
+      "case_id": "SEM-POL-01",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Weekly off-site work limit",
+      "message": "For a Jakarta assignment, what weekly limit applies to working away from the office?",
+      "expected": {
+        "request_type": "policy_question",
+        "field_expectations": {
+          "policy_topic": [["work"]],
+          "question": [["weekly", "limit"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": ["POL-REMOTE-01#1"]
+      }
+    },
+    {
+      "case_id": "SEM-POL-02",
+      "language": "id",
+      "requester_reference": "EMP-201",
+      "subject": "Batas pengajuan cuti",
+      "message": "Kalau cuti tahunan dimulai hari Senin, paling lambat kapan permohonannya harus diajukan?",
+      "expected": {
+        "request_type": "policy_question",
+        "field_expectations": {
+          "policy_topic": [["cuti"]],
+          "question": [["kapan", "diajukan"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": ["POL-LEAVE-01#0"]
+      }
+    },
+    {
+      "case_id": "SEM-POL-03",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Ordinary viewer access rule",
+      "message": "For basic viewer permission in WMS, whose approval is needed and how often is access reviewed?",
+      "expected": {
+        "request_type": "policy_question",
+        "field_expectations": {
+          "policy_topic": [["access"], ["permission"]],
+          "question": [["approval", "reviewed"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": ["POL-ACCESS-01#0"]
+      }
+    },
+    {
+      "case_id": "SEM-POL-04",
+      "language": "id",
+      "requester_reference": "AGT-301",
+      "subject": "Ketentuan admin sementara",
+      "message": "Berapa lama maksimum sesi administrator sementara dan persetujuan pihak mana yang dibutuhkan?",
+      "expected": {
+        "request_type": "policy_question",
+        "field_expectations": {
+          "policy_topic": [["administrator"], ["admin"]],
+          "question": [["berapa", "persetujuan"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": ["POL-PRIVILEGED-01#1"]
+      }
+    },
+    {
+      "case_id": "SEM-POL-05",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Escalating a broad outage",
+      "message": "When an outage blocks every customer, which reporting channel and deadline apply?",
+      "expected": {
+        "request_type": "policy_question",
+        "field_expectations": {
+          "policy_topic": [["outage"], ["incident"]],
+          "question": [["channel", "deadline"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": ["PROC-INCIDENT-01#0"]
+      }
+    },
+    {
+      "case_id": "SEM-POL-06",
+      "language": "id",
+      "requester_reference": "EMP-201",
+      "subject": "Pelaporan gangguan satu pengguna",
+      "message": "Hanya saya yang bermasalah dan masih ada cara kerja alternatif; jalur serta batas waktu pelaporannya apa?",
+      "expected": {
+        "request_type": "policy_question",
+        "field_expectations": {
+          "policy_topic": [["gangguan"], ["pelaporan"]],
+          "question": [["jalur", "batas", "waktu"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": ["PROC-INCIDENT-02#0"]
+      }
+    },
+    {
+      "case_id": "SEM-POL-07",
+      "language": "en",
+      "requester_reference": "AGT-301",
+      "subject": "Closed-case upload retention",
+      "message": "After closing a service case, how long do uploaded files remain when there is no legal hold?",
+      "expected": {
+        "request_type": "policy_question",
+        "field_expectations": {
+          "policy_topic": [["retention"], ["uploaded", "files"]],
+          "question": [["how", "long"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": ["POL-RETENTION-01#0"]
+      }
+    },
+    {
+      "case_id": "SEM-POL-08",
+      "language": "id",
+      "requester_reference": "EMP-201",
+      "subject": "Pemeriksaan sebelum reset kata sandi",
+      "message": "Sebelum reset kata sandi, berapa faktor identitas yang perlu diperiksa dan informasi apa yang dilarang diminta?",
+      "expected": {
+        "request_type": "policy_question",
+        "field_expectations": {
+          "policy_topic": [["kata", "sandi"], ["password"]],
+          "question": [["faktor", "identitas"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": ["PROC-PASSWORD-01#0"]
+      }
+    },
+    {
+      "case_id": "SEM-INC-01",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "WMS packing outage",
+      "message": "WMS packing screens have been unavailable since 08:40 for the entire warehouse. Impact high, urgency high.",
+      "expected": {
+        "request_type": "incident_report",
+        "field_expectations": {
+          "affected_service": [["wms"]],
+          "incident_description": [["unavailable"]],
+          "impact": [["high"]],
+          "urgency": [["high"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-INC-02",
+      "language": "id",
+      "requester_reference": "EMP-201",
+      "subject": "CRM gagal menyimpan aktivitas",
+      "message": "CRM gagal menyimpan catatan panggilan untuk 12 agen. Impact medium dan urgency medium.",
+      "expected": {
+        "request_type": "incident_report",
+        "field_expectations": {
+          "affected_service": [["crm"]],
+          "incident_description": [["menyimpan"]],
+          "impact": [["medium"]],
+          "urgency": [["medium"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-INC-03",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Single-user HRIS timeout",
+      "message": "HRIS leave page times out for one employee, but payroll features work. Impact low and urgency low.",
+      "expected": {
+        "request_type": "incident_report",
+        "field_expectations": {
+          "affected_service": [["hris"]],
+          "incident_description": [["times", "out"]],
+          "impact": [["low"]],
+          "urgency": [["low"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-INC-04",
+      "language": "id",
+      "requester_reference": "EMP-201",
+      "subject": "Semua staf gagal login WMS",
+      "message": "Semua staf gudang tidak bisa login ke WMS sejak 10.00. Impact critical dan urgency high.",
+      "expected": {
+        "request_type": "incident_report",
+        "field_expectations": {
+          "affected_service": [["wms"]],
+          "incident_description": [["login"]],
+          "impact": [["critical"]],
+          "urgency": [["high"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-INC-05",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Blank CRM search",
+      "message": "CRM customer search returns blank results for the sales team. Impact medium.",
+      "expected": {
+        "request_type": "incident_report",
+        "field_expectations": {
+          "affected_service": [["crm"]],
+          "incident_description": [["blank"]],
+          "impact": [["medium"]]
+        },
+        "null_fields": ["urgency"],
+        "state": "NEEDS_INFORMATION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-INC-06",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "HRIS profile update failure",
+      "message": "HRIS employee profile updates fail. Urgency medium.",
+      "expected": {
+        "request_type": "incident_report",
+        "field_expectations": {
+          "affected_service": [["hris"]],
+          "incident_description": [["updates", "fail"]],
+          "urgency": [["medium"]]
+        },
+        "null_fields": ["impact"],
+        "state": "NEEDS_INFORMATION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-INC-07",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Vendor Hub slowdown",
+      "message": "The Vendor Hub is slow for purchasing. Impact medium and urgency low.",
+      "expected": {
+        "request_type": "incident_report",
+        "field_expectations": {
+          "affected_service": [["vendor", "hub"]],
+          "incident_description": [["slow"]],
+          "impact": [["medium"]],
+          "urgency": [["low"]]
+        },
+        "null_fields": [],
+        "state": "NEEDS_REVIEW",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-INC-08",
+      "language": "id",
+      "requester_reference": "EMP-201",
+      "subject": "Cetak label WMS lambat",
+      "message": "WMS lemot saat mencetak label dan 3 operator terdampak. Impact low, urgency medium.",
+      "expected": {
+        "request_type": "incident_report",
+        "field_expectations": {
+          "affected_service": [["wms"]],
+          "incident_description": [["label"]],
+          "impact": [["low"]],
+          "urgency": [["medium"]]
+        },
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-ACC-01",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Month-end WMS viewer access",
+      "message": "Grant WMS viewer access because I reconcile month-end inventory. Approver MGR-104.",
+      "expected": {
+        "request_type": "access_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "requested_access_level": [["viewer"]],
+          "business_reason": [["month", "end", "inventory"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "PENDING_APPROVAL",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-ACC-02",
+      "language": "id",
+      "requester_reference": "EMP-201",
+      "subject": "Akses editor WMS",
+      "message": "Mohon akses editor WMS agar saya dapat memperbaiki koreksi stok harian. Approver MGR-104.",
+      "expected": {
+        "request_type": "access_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "requested_access_level": [["editor"]],
+          "business_reason": [["koreksi", "stok"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "PENDING_APPROVAL",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-ACC-03",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "WMS audit access",
+      "message": "Please provide WMS viewer access so I can inspect weekly audit exceptions.",
+      "expected": {
+        "request_type": "access_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "requested_access_level": [["viewer"]],
+          "business_reason": [["audit", "exceptions"]]
+        },
+        "null_fields": ["approver_id"],
+        "state": "NEEDS_INFORMATION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-ACC-04",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "WMS temporary viewer",
+      "message": "Give me temporary viewer access to WMS. Approver MGR-104.",
+      "expected": {
+        "request_type": "access_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "requested_access_level": [["viewer"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": ["business_reason"],
+        "state": "NEEDS_INFORMATION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-ACC-05",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "CRM pipeline access",
+      "message": "Grant CRM viewer access because I prepare the weekly pipeline review. Approver MGR-104.",
+      "expected": {
+        "request_type": "access_request",
+        "field_expectations": {
+          "target_system": [["crm"]],
+          "requested_access_level": [["viewer"]],
+          "business_reason": [["pipeline", "review"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "NEEDS_REVIEW",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-ACC-06",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Finance Hub access",
+      "message": "Grant Finance Hub viewer access because I check expense summaries. Approver MGR-104.",
+      "expected": {
+        "request_type": "access_request",
+        "field_expectations": {
+          "target_system": [["finance", "hub"]],
+          "requested_access_level": [["viewer"]],
+          "business_reason": [["expense", "summaries"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "NEEDS_REVIEW",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-ACC-07",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Temporary WMS administrator",
+      "message": "Request temporary administrator access to WMS because I must validate a recovery drill. Approver MGR-104.",
+      "expected": {
+        "request_type": "access_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "requested_access_level": [["administrator"]],
+          "business_reason": [["recovery", "drill"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "PENDING_APPROVAL",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-ACC-08",
+      "language": "id",
+      "requester_reference": "EMP-201",
+      "subject": "Akses baca WMS",
+      "message": "Saya membutuhkan akses read-only WMS untuk membuat laporan selisih inventaris. Approver MGR-104.",
+      "expected": {
+        "request_type": "access_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "requested_access_level": [["read", "only"]],
+          "business_reason": [["laporan", "inventaris"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "PENDING_APPROVAL",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-DAT-01",
+      "language": "en",
+      "requester_reference": "AGT-301",
+      "subject": "Supplier route correction",
+      "message": "In WMS change supplier SUP-771 to bank route TEST-17 based on the verified bank letter. Approver MGR-104.",
+      "expected": {
+        "request_type": "data_change_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "record_reference": [["sup", "771"]],
+          "requested_changes": [["test", "17"]],
+          "business_reason": [["verified", "bank", "letter"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "PENDING_APPROVAL",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-DAT-02",
+      "language": "id",
+      "requester_reference": "AGT-301",
+      "subject": "Ubah reorder point",
+      "message": "Di WMS ubah reorder point SKU-442 menjadi 18 karena hasil review stok sudah disetujui. Approver MGR-104.",
+      "expected": {
+        "request_type": "data_change_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "record_reference": [["sku", "442"]],
+          "requested_changes": [["18"]],
+          "business_reason": [["review", "stok"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "PENDING_APPROVAL",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-DAT-03",
+      "language": "en",
+      "requester_reference": "AGT-301",
+      "subject": "Correct bin location",
+      "message": "In WMS change item SKU-808 to bin B-19 because the verified count sheet shows the correction.",
+      "expected": {
+        "request_type": "data_change_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "record_reference": [["sku", "808"]],
+          "requested_changes": [["b", "19"]],
+          "business_reason": [["verified", "count", "sheet"]]
+        },
+        "null_fields": ["approver_id"],
+        "state": "NEEDS_INFORMATION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-DAT-04",
+      "language": "en",
+      "requester_reference": "AGT-301",
+      "subject": "Change warehouse zone",
+      "message": "In WMS change location LOC-14 to zone C3. Approver MGR-104.",
+      "expected": {
+        "request_type": "data_change_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "record_reference": [["loc", "14"]],
+          "requested_changes": [["c3"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": ["business_reason"],
+        "state": "NEEDS_INFORMATION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-DAT-05",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Requester master-data change",
+      "message": "In WMS change item SKU-710 to status ACTIVE because the approved inventory form requires it. Approver MGR-104.",
+      "expected": {
+        "request_type": "data_change_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "record_reference": [["sku", "710"]],
+          "requested_changes": [["active"]],
+          "business_reason": [["approved", "inventory", "form"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "NEEDS_REVIEW",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-DAT-06",
+      "language": "en",
+      "requester_reference": "AGT-301",
+      "subject": "CRM account tier change",
+      "message": "In CRM change account CUST-330 to tier GOLD because the signed commercial review approved it. Approver MGR-104.",
+      "expected": {
+        "request_type": "data_change_request",
+        "field_expectations": {
+          "target_system": [["crm"]],
+          "record_reference": [["cust", "330"]],
+          "requested_changes": [["gold"]],
+          "business_reason": [["commercial", "review"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "NEEDS_REVIEW",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-DAT-07",
+      "language": "en",
+      "requester_reference": "AGT-301",
+      "subject": "Billing Hub correction",
+      "message": "In Billing Hub change invoice INV-909 to status REVIEWED because finance verified the receipt. Approver MGR-104.",
+      "expected": {
+        "request_type": "data_change_request",
+        "field_expectations": {
+          "target_system": [["billing", "hub"]],
+          "record_reference": [["inv", "909"]],
+          "requested_changes": [["reviewed"]],
+          "business_reason": [["verified", "receipt"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "NEEDS_REVIEW",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-DAT-08",
+      "language": "id",
+      "requester_reference": "AGT-301",
+      "subject": "Koreksi nama lokasi",
+      "message": "Di WMS ubah nama LOC-22 menjadi Gudang Timur berdasarkan formulir perubahan yang sudah diverifikasi. Approver MGR-104.",
+      "expected": {
+        "request_type": "data_change_request",
+        "field_expectations": {
+          "target_system": [["wms"]],
+          "record_reference": [["loc", "22"]],
+          "requested_changes": [["gudang", "timur"]],
+          "business_reason": [["formulir", "diverifikasi"]],
+          "approver_id": [["mgr", "104"]]
+        },
+        "null_fields": [],
+        "state": "PENDING_APPROVAL",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-STA-01",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Progress of my WMS request",
+      "message": "What is the current progress of CASE-2026-0001?",
+      "expected": {
+        "request_type": "status_request",
+        "field_expectations": {"case_reference": [["case", "2026", "0001"]]},
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-STA-02",
+      "language": "en",
+      "requester_reference": "AGT-301",
+      "subject": "Warehouse incident progress",
+      "message": "Show the latest state for my case CASE-2026-0002.",
+      "expected": {
+        "request_type": "status_request",
+        "field_expectations": {"case_reference": [["case", "2026", "0002"]]},
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-STA-03",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Another request status",
+      "message": "Tell me the state of CASE-2026-0002.",
+      "expected": {
+        "request_type": "status_request",
+        "field_expectations": {"case_reference": [["case", "2026", "0002"]]},
+        "null_fields": [],
+        "state": "NEEDS_REVIEW",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-STA-04",
+      "language": "en",
+      "requester_reference": "AGT-301",
+      "subject": "Other owner's case state",
+      "message": "What stage has CASE-2026-0001 reached?",
+      "expected": {
+        "request_type": "status_request",
+        "field_expectations": {"case_reference": [["case", "2026", "0001"]]},
+        "null_fields": [],
+        "state": "NEEDS_REVIEW",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-STA-05",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Request progress",
+      "message": "Where is my service request now?",
+      "expected": {
+        "request_type": "status_request",
+        "field_expectations": {},
+        "null_fields": ["case_reference"],
+        "state": "NEEDS_INFORMATION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-STA-06",
+      "language": "en",
+      "requester_reference": "EMP-201",
+      "subject": "Unknown case lookup",
+      "message": "Check the status of CASE-2026-9999.",
+      "expected": {
+        "request_type": "status_request",
+        "field_expectations": {"case_reference": [["case", "2026", "9999"]]},
+        "null_fields": [],
+        "state": "NEEDS_REVIEW",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-STA-07",
+      "language": "id",
+      "requester_reference": "EMP-201",
+      "subject": "Status permintaan WMS saya",
+      "message": "Tolong tampilkan perkembangan CASE-2026-0001 milik saya.",
+      "expected": {
+        "request_type": "status_request",
+        "field_expectations": {"case_reference": [["case", "2026", "0001"]]},
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": []
+      }
+    },
+    {
+      "case_id": "SEM-STA-08",
+      "language": "id",
+      "requester_reference": "AGT-301",
+      "subject": "Perkembangan insiden gudang",
+      "message": "Sudah sampai tahap apa kasus saya CASE-2026-0002?",
+      "expected": {
+        "request_type": "status_request",
+        "field_expectations": {"case_reference": [["case", "2026", "0002"]]},
+        "null_fields": [],
+        "state": "READY_FOR_ACTION",
+        "retrieval_relevant": []
+      }
+    }
+  ],
+  "workflow_cases": [
+    {
+      "case_id": "CTL-01",
+      "control": "exact_intake_replay",
+      "requester_reference": "EMP-201",
+      "subject": "Controlled WMS outage",
+      "message": "WMS is unavailable for the controlled evaluation. Impact high and urgency high.",
+      "fixture_profile": "incident_ready"
+    },
+    {
+      "case_id": "CTL-02",
+      "control": "idempotency_conflict",
+      "requester_reference": "EMP-201",
+      "subject": "Controlled WMS idempotency conflict",
+      "message": "WMS is unavailable during the idempotency-conflict control. Impact high and urgency high.",
+      "fixture_profile": "incident_ready"
+    },
+    {
+      "case_id": "CTL-03",
+      "control": "possible_duplicate_isolated",
+      "requester_reference": "EMP-201",
+      "subject": "WMS viewer access",
+      "message": "Please give me WMS viewer access for weekly inventory reconciliation. MGR-104 is my approver.",
+      "fixture_profile": "access_ready"
+    },
+    {
+      "case_id": "CTL-04",
+      "control": "analysis_exact_replay",
+      "requester_reference": "EMP-201",
+      "subject": "Controlled WMS analysis replay",
+      "message": "WMS is unavailable during the analysis-replay control. Impact high and urgency high.",
+      "fixture_profile": "incident_ready"
+    },
+    {
+      "case_id": "CTL-05",
+      "control": "downstream_exact_replay",
+      "requester_reference": "EMP-201",
+      "subject": "Controlled WMS downstream replay",
+      "message": "WMS is unavailable during the downstream-replay control. Impact high and urgency high.",
+      "fixture_profile": "incident_ready"
+    },
+    {
+      "case_id": "CTL-06",
+      "control": "approval_approved",
+      "requester_reference": "EMP-201",
+      "subject": "Controlled WMS viewer access",
+      "message": "Grant WMS viewer access because I prepare the controlled evaluation report. Approver MGR-104.",
+      "fixture_profile": "access_ready"
+    },
+    {
+      "case_id": "CTL-07",
+      "control": "approval_rejected",
+      "requester_reference": "AGT-301",
+      "subject": "Controlled WMS data change",
+      "message": "In WMS change record REC-700 to value TEST-7 because the verified control form requires it. Approver MGR-104.",
+      "fixture_profile": "data_change_ready"
+    },
+    {
+      "case_id": "CTL-08",
+      "control": "transient_delivery_retry",
+      "requester_reference": "EMP-201",
+      "subject": "Controlled WMS transient retry",
+      "message": "WMS is unavailable during the transient-retry control. Impact high and urgency high.",
+      "fixture_profile": "incident_ready"
+    },
+    {
+      "case_id": "CTL-09",
+      "control": "permanent_delivery_failure",
+      "requester_reference": "EMP-201",
+      "subject": "Controlled WMS permanent failure",
+      "message": "WMS is unavailable during the permanent-failure control. Impact high and urgency high.",
+      "fixture_profile": "incident_ready"
+    },
+    {
+      "case_id": "CTL-10",
+      "control": "expired_claim_recovery",
+      "requester_reference": "EMP-201",
+      "subject": "Controlled WMS expired-claim recovery",
+      "message": "WMS is unavailable during the expired-claim recovery control. Impact high and urgency high.",
+      "fixture_profile": "incident_ready"
+    }
+  ]
+}

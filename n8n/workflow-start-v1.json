@@ -1,0 +1,344 @@
+{
+  "id": "wfstartdeliveryv1",
+  "name": "AI Service Request - Durable Workflow Start v1",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "service-request-intake-v1",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "2af29013-a661-4d12-a31e-5def8491abc1",
+      "name": "Authenticated Workflow Start",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "0dd30785-a8a9-43f1-8a63-bb69183f8301",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "workflow-start-webhook-auth-v1",
+          "name": "Workflow Start Webhook Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const body = $json.body;\nconst headers = $json.headers ?? {};\nconst required = ['schema_version', 'case_id', 'case_reference', 'case_version', 'trigger_event'];\nconst bodyIsObject = body !== null && typeof body === 'object' && !Array.isArray(body);\nconst keys = bodyIsObject ? Object.keys(body).sort() : [];\nconst valid = bodyIsObject\n  && JSON.stringify(keys) === JSON.stringify([...required].sort())\n  && body.schema_version === '1'\n  && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(body.case_id)\n  && /^CASE-[0-9]{4}-[0-9]{4,}$/.test(body.case_reference)\n  && body.case_version === 1\n  && body.trigger_event === 'CASE_RECEIVED'\n  && /^[0-9a-f]{64}$/.test(headers['idempotency-key'] ?? '');\nif (!valid) {\n  return {\n    json: {\n      valid: false,\n      response_status: 422,\n      response_body: {\n        error_code: 'INVALID_WORKFLOW_START',\n        message: 'The request does not match the workflow-start contract.',\n        retryable: false\n      }\n    }\n  };\n}\nreturn {\n  json: {\n    valid: true,\n    case_id: body.case_id,\n    idempotency_key: headers['idempotency-key'],\n    primary_body: {\n      schema_version: body.schema_version,\n      case_reference: body.case_reference,\n      expected_case_version: body.case_version,\n      trigger_event: body.trigger_event\n    }\n  }\n};"
+      },
+      "id": "11fa5c3a-0b48-4a07-af32-75fd7c7df1f8",
+      "name": "Validate v1 Intent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dfd742a2-d824-4ae5-929f-d0df5dac7d0f",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a39a290f-35f9-4cbe-a7c6-bd10aeb195aa",
+      "name": "Intent Is Valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        460,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'http://primary-api:8000/internal/v1/cases/' + $json.case_id + '/analysis-start' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Idempotency-Key",
+              "value": "={{ $json.idempotency_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.primary_body) }}",
+        "options": {
+          "timeout": 5000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "9eed06fb-4047-4797-a68a-2adf8e77e619",
+      "name": "Commit Analysis Start",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        -100
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "primary-workflow-api-auth-v1",
+          "name": "Primary Workflow API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "function asObject(value) {\n  if (typeof value === 'string') {\n    try {\n      value = JSON.parse(value);\n    } catch {\n      return null;\n    }\n  }\n  return value !== null && typeof value === 'object' && !Array.isArray(value)\n    ? value\n    : null;\n}\n\nfunction distinctObjects(values) {\n  return values.filter((value, index) =>\n    value !== null && values.indexOf(value) === index\n  );\n}\n\nfunction isSuccessBody(value) {\n  return value.schema_version === '1'\n    && value.status === 'ACCEPTED'\n    && typeof value.workflow_start_reference === 'string'\n    && value.workflow_start_reference.trim().length > 0\n    && value.workflow_start_reference.length <= 100\n    && typeof value.case_reference === 'string'\n    && /^CASE-[0-9]{4}-[0-9]{4,}$/.test(value.case_reference)\n    && value.accepted_transition === 'RECEIVED->ANALYZING'\n    && ['ANALYZING', 'NEEDS_INFORMATION', 'NEEDS_REVIEW', 'PENDING_APPROVAL', 'READY_FOR_ACTION', 'COMPLETED', 'REJECTED', 'FAILED'].includes(value.current_state)\n    && Number.isInteger(value.case_version)\n    && value.case_version >= 2\n    && typeof value.idempotent_replay === 'boolean';\n}\n\nfunction isErrorBody(value) {\n  return typeof value.error_code === 'string'\n    && value.error_code.trim().length > 0\n    && typeof value.message === 'string'\n    && value.message.trim().length > 0\n    && typeof value.retryable === 'boolean';\n}\n\nfunction keysOf(value) {\n  try {\n    return value === null ? [] : Object.keys(value).slice(0, 12);\n  } catch {\n    return ['unavailable'];\n  }\n}\n\nconst suppliedStatus = $json.response_status ?? $json.statusCode;\nconst suppliedBody = $json.response_body ?? $json.body;\nconst responseStatus = Number(suppliedStatus);\nconst rootBody = asObject(suppliedBody);\nconst candidates = distinctObjects([\n  rootBody,\n  asObject(rootBody?.body),\n  asObject(rootBody?.data),\n  asObject(rootBody?.response),\n  asObject(rootBody?.json),\n  asObject($json.data),\n  asObject($json.response),\n  asObject($json)\n]);\nconst successBody = candidates.find(isSuccessBody);\nconst validatedIntent = $('Validate v1 Intent').item.json;\n\nif (responseStatus === 200 && successBody) {\n  const responseBody = {\n    schema_version: successBody.schema_version,\n    status: successBody.status,\n    workflow_start_reference: successBody.workflow_start_reference,\n    case_reference: successBody.case_reference,\n    accepted_transition: successBody.accepted_transition,\n    current_state: successBody.current_state,\n    case_version: successBody.case_version,\n    idempotent_replay: successBody.idempotent_replay\n  };\n  return {\n    json: {\n      response_status: 200,\n      response_body_json: JSON.stringify(responseBody),\n      continuation: {\n        case_id: validatedIntent.case_id,\n        case_reference: successBody.case_reference,\n        expected_case_version: 2,\n        workflow_start_reference: successBody.workflow_start_reference\n      }\n    }\n  };\n}\n\nconst statusIsValid = Number.isInteger(responseStatus)\n  && responseStatus >= 100\n  && responseStatus <= 599;\nif (!statusIsValid || responseStatus === 200) {\n  return {\n    json: {\n      response_status: 502,\n      response_body_json: JSON.stringify({\n        error_code: 'INVALID_PRIMARY_RESPONSE',\n        message: 'The primary workflow response did not match the v1 acknowledgement contract.',\n        retryable: true,\n        received_shape: {\n          item_keys: keysOf(asObject($json)),\n          body_keys: keysOf(rootBody)\n        }\n      })\n    }\n  };\n}\n\nconst errorBody = candidates.find(isErrorBody);\nconst responseBody = errorBody\n  ? {\n      error_code: errorBody.error_code,\n      message: errorBody.message,\n      retryable: errorBody.retryable\n    }\n  : {\n      error_code: `PRIMARY_HTTP_${responseStatus}`,\n      message: 'The primary workflow endpoint returned a non-contract error.',\n      retryable: responseStatus === 408\n        || responseStatus === 429\n        || responseStatus >= 500\n    };\nreturn {\n  json: {\n    response_status: responseStatus,\n    response_body_json: JSON.stringify(responseBody)\n  }\n};"
+      },
+      "id": "9222def1-f57b-44fa-894f-b7728947e898",
+      "name": "Prepare Workflow Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        920,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.response_body_json }}",
+        "options": {
+          "enableStreaming": false,
+          "responseCode": "={{ $json.response_status }}"
+        }
+      },
+      "id": "1cba2a24-0348-46f9-b682-0f00e820af51",
+      "name": "Return Workflow Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8a52ff68-2dce-4be4-a884-f2bf05d90617",
+              "leftValue": "={{ $json.continuation !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "04d8de70-c08a-4ff8-b37a-5ab7419d871c",
+      "name": "Continuation Is Ready",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'http://primary-api:8000/internal/v1/cases/' + $json.continuation.case_id + '/analysis' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ schema_version: '1', case_reference: $json.continuation.case_reference, expected_case_version: $json.continuation.expected_case_version, workflow_start_reference: $json.continuation.workflow_start_reference }) }}",
+        "options": {
+          "timeout": 200000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "81dde7e2-0662-43be-b308-051656fe5528",
+      "name": "Run Primary Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1640,
+        -100
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "primary-workflow-api-auth-v1",
+          "name": "Primary Workflow API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "function asObject(value) {\n  if (typeof value === 'string') {\n    try {\n      value = JSON.parse(value);\n    } catch {\n      return null;\n    }\n  }\n  return value !== null && typeof value === 'object' && !Array.isArray(value)\n    ? value\n    : null;\n}\n\nfunction distinctObjects(values) {\n  return values.filter((value, index) =>\n    value !== null && values.indexOf(value) === index\n  );\n}\n\nfunction hasExactKeys(value, required) {\n  return JSON.stringify(Object.keys(value).sort())\n    === JSON.stringify([...required].sort());\n}\n\nconst analysisKeys = [\n  'schema_version',\n  'analysis_run_id',\n  'case_reference',\n  'attempt_number',\n  'outcome',\n  'analysis_status',\n  'validation_decision',\n  'current_state',\n  'case_version',\n  'idempotent_replay',\n  'provider_called'\n];\nconst outcomes = [\n  'READY',\n  'NEEDS_INFORMATION',\n  'NEEDS_REVIEW',\n  'REJECTED',\n  'FAILED',\n  'RETRYABLE_FAILURE',\n  'REPLAY'\n];\nconst analysisStatuses = [\n  'COMPLETED',\n  'INVALID_OUTPUT',\n  'FAILED',\n  'SKIPPED'\n];\nconst decisions = [\n  null,\n  'READY',\n  'NEEDS_INFORMATION',\n  'NEEDS_REVIEW',\n  'REJECTED'\n];\nconst states = [\n  'ANALYZING',\n  'NEEDS_INFORMATION',\n  'NEEDS_REVIEW',\n  'PENDING_APPROVAL',\n  'READY_FOR_ACTION',\n  'COMPLETED',\n  'REJECTED',\n  'FAILED'\n];\n\nfunction isAnalysisBody(value) {\n  return hasExactKeys(value, analysisKeys)\n    && value.schema_version === '1'\n    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(value.analysis_run_id)\n    && /^CASE-[0-9]{4}-[0-9]{4,}$/.test(value.case_reference)\n    && Number.isInteger(value.attempt_number)\n    && value.attempt_number >= 1\n    && value.attempt_number <= 2\n    && outcomes.includes(value.outcome)\n    && analysisStatuses.includes(value.analysis_status)\n    && decisions.includes(value.validation_decision)\n    && states.includes(value.current_state)\n    && Number.isInteger(value.case_version)\n    && value.case_version >= 2\n    && typeof value.idempotent_replay === 'boolean'\n    && typeof value.provider_called === 'boolean';\n}\n\nfunction isErrorBody(value) {\n  return typeof value.error_code === 'string'\n    && value.error_code.trim().length > 0\n    && typeof value.message === 'string'\n    && value.message.trim().length > 0\n    && typeof value.retryable === 'boolean';\n}\n\nconst responseStatus = Number($json.statusCode ?? $json.response_status);\nconst suppliedBody = $json.body ?? $json.response_body;\nconst rootBody = asObject(suppliedBody);\nconst candidates = distinctObjects([\n  rootBody,\n  asObject(rootBody?.body),\n  asObject(rootBody?.data),\n  asObject(rootBody?.response),\n  asObject(rootBody?.json),\n  asObject($json.data),\n  asObject($json.response),\n  asObject($json)\n]);\nconst analysisBody = candidates.find(isAnalysisBody);\nconst errorBody = candidates.find(isErrorBody);\n\nif (responseStatus === 200 && analysisBody) {\n  return {\n    json: {\n      classification: 'FINALIZED',\n      http_status: 200,\n      analysis_run_id: analysisBody.analysis_run_id,\n      case_reference: analysisBody.case_reference,\n      attempt_number: analysisBody.attempt_number,\n      outcome: analysisBody.outcome,\n      analysis_status: analysisBody.analysis_status,\n      validation_decision: analysisBody.validation_decision,\n      current_state: analysisBody.current_state,\n      case_version: analysisBody.case_version,\n      idempotent_replay: analysisBody.idempotent_replay,\n      provider_called: analysisBody.provider_called\n    }\n  };\n}\n\nif (\n  responseStatus === 503\n  && analysisBody\n  && analysisBody.outcome === 'RETRYABLE_FAILURE'\n) {\n  return {\n    json: {\n      classification: 'RETRYABLE_FAILURE_RECORDED',\n      http_status: 503,\n      analysis_run_id: analysisBody.analysis_run_id,\n      case_reference: analysisBody.case_reference,\n      attempt_number: analysisBody.attempt_number,\n      outcome: analysisBody.outcome,\n      current_state: analysisBody.current_state,\n      case_version: analysisBody.case_version,\n      idempotent_replay: analysisBody.idempotent_replay,\n      provider_called: analysisBody.provider_called\n    }\n  };\n}\n\nif (\n  responseStatus === 409\n  && errorBody?.error_code === 'ANALYSIS_IN_PROGRESS'\n  && errorBody.retryable\n) {\n  return {\n    json: {\n      classification: 'IN_PROGRESS',\n      http_status: 409,\n      error_code: errorBody.error_code,\n      retryable: true\n    }\n  };\n}\n\nif (\n  !Number.isInteger(responseStatus)\n  || responseStatus < 100\n  || responseStatus > 599\n  || (responseStatus >= 200 && responseStatus <= 299)\n  || (!analysisBody && !errorBody)\n) {\n  return {\n    json: {\n      classification: 'INVALID_PRIMARY_RESPONSE',\n      http_status: Number.isInteger(responseStatus) ? responseStatus : null,\n      retryable: true\n    }\n  };\n}\n\nreturn {\n  json: {\n    classification: errorBody?.retryable\n      ? 'RETRYABLE_CONTINUATION_FAILURE'\n      : 'PERMANENT_CONTINUATION_FAILURE',\n    http_status: responseStatus,\n    error_code: errorBody?.error_code ?? `PRIMARY_HTTP_${responseStatus}`,\n    retryable: errorBody?.retryable ?? false\n  }\n};"
+      },
+      "id": "9d42b11d-c81e-4875-9f20-b278616371ba",
+      "name": "Classify Analysis Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        -100
+      ]
+    }
+  ],
+  "connections": {
+    "Authenticated Workflow Start": {
+      "main": [
+        [
+          {
+            "node": "Validate v1 Intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate v1 Intent": {
+      "main": [
+        [
+          {
+            "node": "Intent Is Valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intent Is Valid": {
+      "main": [
+        [
+          {
+            "node": "Commit Analysis Start",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Workflow Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Commit Analysis Start": {
+      "main": [
+        [
+          {
+            "node": "Prepare Workflow Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Workflow Response": {
+      "main": [
+        [
+          {
+            "node": "Return Workflow Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Return Workflow Response": {
+      "main": [
+        [
+          {
+            "node": "Continuation Is Ready",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Continuation Is Ready": {
+      "main": [
+        [
+          {
+            "node": "Run Primary Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Run Primary Analysis": {
+      "main": [
+        [
+          {
+            "node": "Classify Analysis Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jakarta"
+  },
+  "pinData": {},
+  "versionId": "3edcd2b9-533f-4e69-a0e0-22cde77a55c2"
+}

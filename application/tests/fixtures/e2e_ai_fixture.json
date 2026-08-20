@@ -1,0 +1,111 @@
+{
+  "schema_version": "1",
+  "model_name": "fixture-provider",
+  "model_identifier": "fixture-e2e-v1",
+  "fixtures": [
+    {
+      "subject": "E2E incident",
+      "original_message": "WMS is unavailable. Impact high and urgency high.",
+      "responses": [{
+        "kind": "result", "wall_time_ms": 1, "input_tokens": 0, "output_tokens": 0,
+        "proposal": {
+          "request_type": "incident_report",
+          "summary": "WMS outage with high impact and urgency.",
+          "fields": {"policy_topic": null, "question": null, "affected_service": "WMS", "incident_description": "WMS is unavailable", "impact": "high", "urgency": "high", "target_system": null, "requested_access_level": null, "business_reason": null, "approver_id": null, "record_reference": null, "requested_changes": null, "case_reference": null},
+          "evidence": [{"field": "affected_service", "quote": "WMS"}, {"field": "incident_description", "quote": "WMS is unavailable"}, {"field": "impact", "quote": "high"}, {"field": "urgency", "quote": "high"}]
+        }
+      }]
+    },
+    {
+      "subject": "E2E policy",
+      "original_message": "What is the remote work policy and how many remote days are allowed?",
+      "responses": [{
+        "kind": "result", "wall_time_ms": 1, "input_tokens": 0, "output_tokens": 0,
+        "proposal": {
+          "request_type": "policy_question",
+          "summary": "Question about allowed remote work days.",
+          "fields": {"policy_topic": "remote work policy", "question": "how many remote days are allowed", "affected_service": null, "incident_description": null, "impact": null, "urgency": null, "target_system": null, "requested_access_level": null, "business_reason": null, "approver_id": null, "record_reference": null, "requested_changes": null, "case_reference": null},
+          "evidence": [{"field": "policy_topic", "quote": "remote work policy"}, {"field": "question", "quote": "how many remote days are allowed"}]
+        }
+      }]
+    },
+    {
+      "subject": "E2E status",
+      "original_message": "Please show the status of CASE-2026-0001.",
+      "responses": [{
+        "kind": "result", "wall_time_ms": 1, "input_tokens": 0, "output_tokens": 0,
+        "proposal": {
+          "request_type": "status_request",
+          "summary": "Requester asks for an owned case status.",
+          "fields": {"policy_topic": null, "question": null, "affected_service": null, "incident_description": null, "impact": null, "urgency": null, "target_system": null, "requested_access_level": null, "business_reason": null, "approver_id": null, "record_reference": null, "requested_changes": null, "case_reference": "CASE-2026-0001"},
+          "evidence": [{"field": "case_reference", "quote": "CASE-2026-0001"}]
+        }
+      }]
+    },
+    {
+      "subject": "E2E access",
+      "original_message": "Request WMS VIEWER access for weekly inventory reporting. Approver MGR-104.",
+      "responses": [{
+        "kind": "result", "wall_time_ms": 1, "input_tokens": 0, "output_tokens": 0,
+        "proposal": {
+          "request_type": "access_request",
+          "summary": "WMS viewer access for weekly reporting.",
+          "fields": {"policy_topic": null, "question": null, "affected_service": null, "incident_description": null, "impact": null, "urgency": null, "target_system": "WMS", "requested_access_level": "VIEWER", "business_reason": "weekly inventory reporting", "approver_id": "MGR-104", "record_reference": null, "requested_changes": null, "case_reference": null},
+          "evidence": [{"field": "target_system", "quote": "WMS"}, {"field": "requested_access_level", "quote": "VIEWER"}, {"field": "business_reason", "quote": "weekly inventory reporting"}, {"field": "approver_id", "quote": "MGR-104"}]
+        }
+      }]
+    },
+    {
+      "subject": "E2E data change",
+      "original_message": "Change WMS record SUP-448 to bank route TEST-02 for supplier correction. Approver MGR-104.",
+      "responses": [{
+        "kind": "result", "wall_time_ms": 1, "input_tokens": 0, "output_tokens": 0,
+        "proposal": {
+          "request_type": "data_change_request",
+          "summary": "Supplier record bank-route correction.",
+          "fields": {"policy_topic": null, "question": null, "affected_service": null, "incident_description": null, "impact": null, "urgency": null, "target_system": "WMS", "requested_access_level": null, "business_reason": "supplier correction", "approver_id": "MGR-104", "record_reference": "SUP-448", "requested_changes": "bank route TEST-02", "case_reference": null},
+          "evidence": [{"field": "target_system", "quote": "WMS"}, {"field": "business_reason", "quote": "supplier correction"}, {"field": "approver_id", "quote": "MGR-104"}, {"field": "record_reference", "quote": "SUP-448"}, {"field": "requested_changes", "quote": "bank route TEST-02"}]
+        }
+      }]
+    },
+    {
+      "subject": "E2E missing information",
+      "original_message": "WMS login is failing. Impact high.",
+      "responses": [{
+        "kind": "result", "wall_time_ms": 1, "input_tokens": 0, "output_tokens": 0,
+        "proposal": {
+          "request_type": "incident_report",
+          "summary": "WMS login failure missing urgency.",
+          "fields": {"policy_topic": null, "question": null, "affected_service": "WMS", "incident_description": "WMS login is failing", "impact": "high", "urgency": null, "target_system": null, "requested_access_level": null, "business_reason": null, "approver_id": null, "record_reference": null, "requested_changes": null, "case_reference": null},
+          "evidence": [{"field": "affected_service", "quote": "WMS"}, {"field": "incident_description", "quote": "WMS login is failing"}, {"field": "impact", "quote": "high"}]
+        }
+      }]
+    },
+    {
+      "subject": "E2E missing information",
+      "original_message": "WMS login is failing. Impact high.\n\nRequester additional information:\nUrgency medium.",
+      "responses": [{
+        "kind": "result", "wall_time_ms": 1, "input_tokens": 0, "output_tokens": 0,
+        "proposal": {
+          "request_type": "incident_report",
+          "summary": "WMS login failure with high impact and medium urgency.",
+          "fields": {"policy_topic": null, "question": null, "affected_service": "WMS", "incident_description": "WMS login is failing", "impact": "high", "urgency": "medium", "target_system": null, "requested_access_level": null, "business_reason": null, "approver_id": null, "record_reference": null, "requested_changes": null, "case_reference": null},
+          "evidence": [{"field": "affected_service", "quote": "WMS"}, {"field": "incident_description", "quote": "WMS login is failing"}, {"field": "impact", "quote": "high"}, {"field": "urgency", "quote": "medium"}]
+        }
+      }]
+    },
+    {
+      "subject": "E2E agent review",
+      "original_message": "Unknown portal is slow. Impact medium and urgency low.",
+      "responses": [{
+        "kind": "result", "wall_time_ms": 1, "input_tokens": 0, "output_tokens": 0,
+        "proposal": {
+          "request_type": "incident_report",
+          "summary": "Ambiguous portal performance report.",
+          "fields": {"policy_topic": null, "question": null, "affected_service": "Unknown portal", "incident_description": "Unknown portal is slow", "impact": "medium", "urgency": "low", "target_system": null, "requested_access_level": null, "business_reason": null, "approver_id": null, "record_reference": null, "requested_changes": null, "case_reference": null},
+          "evidence": [{"field": "affected_service", "quote": "Unknown portal"}, {"field": "incident_description", "quote": "Unknown portal is slow"}, {"field": "impact", "quote": "medium"}, {"field": "urgency", "quote": "low"}]
+        }
+      }]
+    }
+  ]
+}

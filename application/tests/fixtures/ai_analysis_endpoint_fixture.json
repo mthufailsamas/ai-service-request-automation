@@ -1,0 +1,106 @@
+{
+  "schema_version": "1",
+  "model_name": "fixture-provider",
+  "model_identifier": "fixture-ai-analysis-v1",
+  "fixtures": [
+    {
+      "subject": "Endpoint incident analysis",
+      "original_message": "WMS is unavailable. Impact high and urgency high.",
+      "responses": [
+        {
+          "kind": "result",
+          "wall_time_ms": 1,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "proposal": {
+            "request_type": "incident_report",
+            "summary": "WMS is unavailable with high impact and urgency.",
+            "fields": {
+              "policy_topic": null,
+              "question": null,
+              "affected_service": "WMS",
+              "incident_description": "WMS is unavailable",
+              "impact": "high",
+              "urgency": "high",
+              "target_system": null,
+              "requested_access_level": null,
+              "business_reason": null,
+              "approver_id": null,
+              "record_reference": null,
+              "requested_changes": null,
+              "case_reference": null
+            },
+            "evidence": [
+              {"field": "affected_service", "quote": "WMS"},
+              {"field": "incident_description", "quote": "WMS is unavailable"},
+              {"field": "impact", "quote": "high"},
+              {"field": "urgency", "quote": "high"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "subject": "Delayed continuation incident",
+      "original_message": "WMS is unavailable. Impact high and urgency high.",
+      "responses": [
+        {
+          "kind": "result",
+          "wall_time_ms": 2000,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "delay_ms": 2000,
+          "proposal": {
+            "request_type": "incident_report",
+            "summary": "WMS is unavailable with high impact and urgency.",
+            "fields": {
+              "policy_topic": null,
+              "question": null,
+              "affected_service": "WMS",
+              "incident_description": "WMS is unavailable",
+              "impact": "high",
+              "urgency": "high",
+              "target_system": null,
+              "requested_access_level": null,
+              "business_reason": null,
+              "approver_id": null,
+              "record_reference": null,
+              "requested_changes": null,
+              "case_reference": null
+            },
+            "evidence": [
+              {
+                "field": "affected_service",
+                "quote": "WMS"
+              },
+              {
+                "field": "incident_description",
+                "quote": "WMS is unavailable"
+              },
+              {
+                "field": "impact",
+                "quote": "high"
+              },
+              {
+                "field": "urgency",
+                "quote": "high"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "subject": "Retryable continuation incident",
+      "original_message": "WMS is unavailable. Impact high and urgency high.",
+      "responses": [
+        {
+          "kind": "retryable_failure",
+          "wall_time_ms": 1,
+          "error_code": "FIXTURE_TRANSIENT_FAILURE",
+          "message": "Controlled continuation fixture failure."
+        }
+      ]
+    }
+  ]
+}

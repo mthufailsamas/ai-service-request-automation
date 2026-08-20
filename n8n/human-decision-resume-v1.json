@@ -1,0 +1,164 @@
+{
+  "id": "humandecisionresumev1",
+  "name": "AI Service Request - Human Decision Resume v1",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "service-request-human-resume-v1",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "2b1556b0-573b-44cf-a35b-f9abf0e74f01",
+      "name": "Authenticated Human Resume",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 0],
+      "webhookId": "e41d1390-14e5-46aa-b399-66563f214101",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "workflow-start-webhook-auth-v1",
+          "name": "Workflow Start Webhook Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const body = $json.body;\nconst headers = $json.headers ?? {};\nconst required = ['schema_version', 'case_id', 'case_reference', 'case_version', 'human_decision_reference', 'action', 'trigger_event', 'resume_route'];\nconst mapping = {\n  SUBMIT_INFORMATION: ['REQUESTER_INFORMATION_SUBMITTED', 'ANALYSIS_CONTINUATION'],\n  CONFIRM_REVIEW: ['SERVICE_AGENT_REVIEW_CONFIRMED', 'ANALYSIS_CONTINUATION'],\n  CORRECT_REVIEW: ['SERVICE_AGENT_CORRECTION_ACCEPTED', 'ANALYSIS_CONTINUATION'],\n  REJECT_REVIEW: ['SERVICE_AGENT_REJECTED', 'TERMINAL_NOTIFICATION'],\n  APPROVE_REQUEST: ['APPROVAL_APPROVED', 'DOWNSTREAM_ACTION'],\n  REJECT_REQUEST: ['APPROVAL_REJECTED', 'TERMINAL_NOTIFICATION']\n};\nconst bodyIsObject = body !== null && typeof body === 'object' && !Array.isArray(body);\nconst keys = bodyIsObject ? Object.keys(body).sort() : [];\nconst expected = bodyIsObject ? mapping[body.action] : undefined;\nconst valid = bodyIsObject\n  && JSON.stringify(keys) === JSON.stringify([...required].sort())\n  && body.schema_version === '1'\n  && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(body.case_id)\n  && /^CASE-[0-9]{4}-[0-9]{4,}$/.test(body.case_reference)\n  && Number.isInteger(body.case_version)\n  && body.case_version >= 2\n  && /^HD-[1-9][0-9]*$/.test(body.human_decision_reference)\n  && expected !== undefined\n  && body.trigger_event === expected[0]\n  && body.resume_route === expected[1]\n  && /^[0-9a-f]{64}$/.test(headers['idempotency-key'] ?? '');\nif (!valid) {\n  return {\n    json: {\n      valid: false,\n      response_status: 422,\n      response_body: {\n        error_code: 'INVALID_HUMAN_RESUME',\n        message: 'The request does not match the human-resume contract.',\n        retryable: false\n      }\n    }\n  };\n}\nreturn {\n  json: {\n    valid: true,\n    case_id: body.case_id,\n    idempotency_key: headers['idempotency-key'],\n    primary_body: {\n      schema_version: body.schema_version,\n      case_reference: body.case_reference,\n      expected_case_version: body.case_version,\n      human_decision_reference: body.human_decision_reference,\n      action: body.action,\n      trigger_event: body.trigger_event,\n      resume_route: body.resume_route\n    }\n  }\n};"
+      },
+      "id": "eac0dd21-cc3d-4436-b488-dd4be9329d02",
+      "name": "Validate Human Resume",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a9d2479c-b463-4dfd-88dc-c8fb7e014303",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b034dbf9-4409-4183-8af3-08e9199a5703",
+      "name": "Resume Intent Is Valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [460, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'http://primary-api:8000/internal/v1/cases/' + $json.case_id + '/human-resume' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Idempotency-Key",
+              "value": "={{ $json.idempotency_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.primary_body) }}",
+        "options": {
+          "timeout": 5000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "2e73cc60-bdaf-44f3-a16f-0aca739a1604",
+      "name": "Accept Resume Route",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, -100],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "primary-workflow-api-auth-v1",
+          "name": "Primary Workflow API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "function asObject(value) {\n  if (typeof value === 'string') {\n    try { value = JSON.parse(value); } catch { return null; }\n  }\n  return value !== null && typeof value === 'object' && !Array.isArray(value) ? value : null;\n}\nfunction distinctObjects(values) {\n  return values.filter((value, index) => value !== null && values.indexOf(value) === index);\n}\nfunction hasExactKeys(value, required) {\n  return JSON.stringify(Object.keys(value).sort()) === JSON.stringify([...required].sort());\n}\nconst successKeys = ['schema_version', 'status', 'human_resume_reference', 'case_reference', 'resume_route', 'current_state', 'case_version', 'idempotent_replay'];\nfunction isSuccessBody(value) {\n  return hasExactKeys(value, successKeys)\n    && value.schema_version === '1'\n    && value.status === 'ACCEPTED'\n    && /^HDRESUME-[1-9][0-9]*$/.test(value.human_resume_reference)\n    && /^CASE-[0-9]{4}-[0-9]{4,}$/.test(value.case_reference)\n    && ['ANALYSIS_CONTINUATION', 'DOWNSTREAM_ACTION', 'TERMINAL_NOTIFICATION'].includes(value.resume_route)\n    && ['ANALYZING', 'READY_FOR_ACTION', 'REJECTED'].includes(value.current_state)\n    && Number.isInteger(value.case_version)\n    && value.case_version >= 2\n    && typeof value.idempotent_replay === 'boolean';\n}\nfunction isErrorBody(value) {\n  return typeof value.error_code === 'string'\n    && value.error_code.trim().length > 0\n    && typeof value.message === 'string'\n    && value.message.trim().length > 0\n    && typeof value.retryable === 'boolean';\n}\nconst suppliedStatus = $json.response_status ?? $json.statusCode;\nconst suppliedBody = $json.response_body ?? $json.body;\nconst responseStatus = Number(suppliedStatus);\nconst rootBody = asObject(suppliedBody);\nconst candidates = distinctObjects([\n  rootBody, asObject(rootBody?.body), asObject(rootBody?.data),\n  asObject(rootBody?.response), asObject(rootBody?.json),\n  asObject($json.data), asObject($json.response), asObject($json)\n]);\nconst successBody = candidates.find(isSuccessBody);\nif (responseStatus === 200 && successBody) {\n  return {\n    json: {\n      response_status: 200,\n      response_body_json: JSON.stringify({\n        schema_version: successBody.schema_version,\n        status: successBody.status,\n        human_resume_reference: successBody.human_resume_reference,\n        case_reference: successBody.case_reference,\n        resume_route: successBody.resume_route,\n        current_state: successBody.current_state,\n        case_version: successBody.case_version,\n        idempotent_replay: successBody.idempotent_replay\n      })\n    }\n  };\n}\nconst statusIsValid = Number.isInteger(responseStatus) && responseStatus >= 100 && responseStatus <= 599;\nif (!statusIsValid || responseStatus === 200) {\n  return {\n    json: {\n      response_status: 502,\n      response_body_json: JSON.stringify({\n        error_code: 'INVALID_PRIMARY_RESPONSE',\n        message: 'The primary human-resume response did not match the v1 contract.',\n        retryable: true\n      })\n    }\n  };\n}\nconst errorBody = candidates.find(isErrorBody);\nconst responseBody = errorBody\n  ? { error_code: errorBody.error_code, message: errorBody.message, retryable: errorBody.retryable }\n  : {\n      error_code: `PRIMARY_HTTP_${responseStatus}`,\n      message: 'The primary human-resume endpoint returned a non-contract error.',\n      retryable: responseStatus === 408 || responseStatus === 429 || responseStatus >= 500\n    };\nreturn {\n  json: {\n    response_status: responseStatus,\n    response_body_json: JSON.stringify(responseBody)\n  }\n};"
+      },
+      "id": "d47b9f49-df9d-4fe0-ab48-8adfc3e83b05",
+      "name": "Prepare Resume Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [920, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.response_body_json }}",
+        "options": {
+          "enableStreaming": false,
+          "responseCode": "={{ $json.response_status }}"
+        }
+      },
+      "id": "c038fa61-c830-4e60-a815-31dbba114706",
+      "name": "Return Resume Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [1160, 0]
+    }
+  ],
+  "connections": {
+    "Authenticated Human Resume": {
+      "main": [[{"node": "Validate Human Resume", "type": "main", "index": 0}]]
+    },
+    "Validate Human Resume": {
+      "main": [[{"node": "Resume Intent Is Valid", "type": "main", "index": 0}]]
+    },
+    "Resume Intent Is Valid": {
+      "main": [
+        [{"node": "Accept Resume Route", "type": "main", "index": 0}],
+        [{"node": "Prepare Resume Response", "type": "main", "index": 0}]
+      ]
+    },
+    "Accept Resume Route": {
+      "main": [[{"node": "Prepare Resume Response", "type": "main", "index": 0}]]
+    },
+    "Prepare Resume Response": {
+      "main": [[{"node": "Return Resume Response", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jakarta"
+  },
+  "pinData": {},
+  "versionId": "25d5408d-ad36-4a21-8c13-ffb65e8d9318"
+}

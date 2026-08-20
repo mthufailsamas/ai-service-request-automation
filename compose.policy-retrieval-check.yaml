@@ -1,0 +1,79 @@
+name: ai-service-request-policy-retrieval-check
+
+services:
+  database:
+    image: pgvector/pgvector:0.8.6-pg17
+    environment:
+      POSTGRES_DB: ai_service_request_test
+      POSTGRES_USER: service_request_test
+      POSTGRES_PASSWORD: ${AI_AUTOMATION_RETRIEVAL_DB_PASSWORD:?The retrieval runner must provide a temporary database password}
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - test "$$(cat /proc/1/comm)" = "postgres" && pg_isready -U service_request_test -d ai_service_request_test
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    tmpfs:
+      - /var/lib/postgresql/data
+    volumes:
+      - ./sql/migrations/001_identity_and_reference.sql:/docker-entrypoint-initdb.d/01-migration.sql:ro
+      - ./sql/seeds/001_fictional_identity_and_reference.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+      - ./sql/migrations/002_case_foundation.sql:/docker-entrypoint-initdb.d/03-migration.sql:ro
+      - ./sql/seeds/002_fictional_cases.sql:/docker-entrypoint-initdb.d/04-seed.sql:ro
+      - ./sql/migrations/003_ai_and_decisions.sql:/docker-entrypoint-initdb.d/05-migration.sql:ro
+      - ./sql/migrations/004_policy_retrieval.sql:/docker-entrypoint-initdb.d/06-migration.sql:ro
+      - ./sql/seeds/003_policy_database_fixtures.sql:/docker-entrypoint-initdb.d/07-seed.sql:ro
+      - ./sql/migrations/005_reliable_delivery.sql:/docker-entrypoint-initdb.d/08-migration.sql:ro
+      - ./sql/migrations/006_intake_execution.sql:/docker-entrypoint-initdb.d/09-migration.sql:ro
+      - ./sql/migrations/007_ai_analysis_runtime.sql:/docker-entrypoint-initdb.d/10-migration.sql:ro
+    restart: "no"
+
+  primary-api:
+    image: ai-service-request-policy-retrieval-check-application:local
+    build:
+      context: ./application
+    depends_on:
+      database:
+        condition: service_healthy
+    command: [uvicorn, main:app, --host, 0.0.0.0, --port, "8000"]
+    environment:
+      APP_SESSION_SECRET: ${AI_AUTOMATION_RETRIEVAL_SESSION_SECRET:?The retrieval runner must provide a temporary session secret}
+      INTAKE_WEBHOOK_TOKEN: ${AI_AUTOMATION_RETRIEVAL_INTAKE_TOKEN:?The retrieval runner must provide a temporary intake token}
+      POLICY_RETRIEVAL_PROVIDER: fixture
+      PRIMARY_DATABASE_URL: postgresql://service_request_test:${AI_AUTOMATION_RETRIEVAL_DB_PASSWORD}@database:5432/ai_service_request_test
+      PRIMARY_WORKFLOW_TOKEN: ${AI_AUTOMATION_RETRIEVAL_WORKFLOW_TOKEN:?The retrieval runner must provide a temporary workflow token}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2).read()"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  tests:
+    image: ai-service-request-policy-retrieval-check-application:local
+    depends_on:
+      primary-api:
+        condition: service_healthy
+    command: [python, /checks/test_policy_retrieval_integration.py]
+    environment:
+      POLICY_ANSWER_IDENTIFIER: 0edcdef34593
+      POLICY_EMBEDDING_IDENTIFIER: ac6da0dfba84
+      POLICY_OLLAMA_BASE_URL: http://host.docker.internal:11434
+      PRIMARY_API_URL: http://primary-api:8000
+      PRIMARY_DATABASE_URL: postgresql://service_request_test:${AI_AUTOMATION_RETRIEVAL_DB_PASSWORD}@database:5432/ai_service_request_test
+      PRIMARY_WORKFLOW_TOKEN: ${AI_AUTOMATION_RETRIEVAL_WORKFLOW_TOKEN:?The retrieval runner must provide a temporary workflow token}
+      PYTHONPATH: /app
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    read_only: true
+    tmpfs: [/tmp]
+    volumes:
+      - ./application/tests/test_policy_retrieval_integration.py:/checks/test_policy_retrieval_integration.py:ro
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"

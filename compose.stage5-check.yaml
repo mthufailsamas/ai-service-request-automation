@@ -1,0 +1,57 @@
+name: ai-service-request-stage5-check
+
+services:
+  database:
+    image: pgvector/pgvector:0.8.6-pg17
+    environment:
+      POSTGRES_DB: ai_service_request_test
+      POSTGRES_USER: service_request_test
+      POSTGRES_PASSWORD: ${AI_AUTOMATION_STAGE5_DB_PASSWORD:?The stage 5 runner must provide a temporary password}
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - test "$$(cat /proc/1/comm)" = "postgres" && pg_isready -U service_request_test -d ai_service_request_test
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    tmpfs:
+      - /var/lib/postgresql/data
+    volumes:
+      - ./sql/migrations/001_identity_and_reference.sql:/docker-entrypoint-initdb.d/01-migration.sql:ro
+      - ./sql/seeds/001_fictional_identity_and_reference.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+      - ./sql/migrations/002_case_foundation.sql:/docker-entrypoint-initdb.d/03-migration.sql:ro
+      - ./sql/seeds/002_fictional_cases.sql:/docker-entrypoint-initdb.d/04-seed.sql:ro
+      - ./sql/migrations/003_ai_and_decisions.sql:/docker-entrypoint-initdb.d/05-migration.sql:ro
+      - ./sql/migrations/004_policy_retrieval.sql:/docker-entrypoint-initdb.d/06-migration.sql:ro
+      - ./sql/seeds/003_policy_database_fixtures.sql:/docker-entrypoint-initdb.d/07-seed.sql:ro
+      - ./sql/migrations/005_reliable_delivery.sql:/docker-entrypoint-initdb.d/08-migration.sql:ro
+    restart: "no"
+
+  tests:
+    image: postgres:17-alpine
+    depends_on:
+      database:
+        condition: service_healthy
+    command:
+      - psql
+      - --host=database
+      - --username=service_request_test
+      - --dbname=ai_service_request_test
+      - --file=/checks/001_identity_and_reference_test.sql
+      - --file=/checks/002_case_foundation_test.sql
+      - --file=/checks/003_ai_and_decisions_test.sql
+      - --file=/checks/004_policy_retrieval_test.sql
+      - --file=/checks/005_reliable_delivery_test.sql
+    environment:
+      PGCONNECT_TIMEOUT: "5"
+      PGPASSWORD: ${AI_AUTOMATION_STAGE5_DB_PASSWORD:?The stage 5 runner must provide a temporary password}
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      - ./sql/tests/001_identity_and_reference_test.sql:/checks/001_identity_and_reference_test.sql:ro
+      - ./sql/tests/002_case_foundation_test.sql:/checks/002_case_foundation_test.sql:ro
+      - ./sql/tests/003_ai_and_decisions_test.sql:/checks/003_ai_and_decisions_test.sql:ro
+      - ./sql/tests/004_policy_retrieval_test.sql:/checks/004_policy_retrieval_test.sql:ro
+      - ./sql/tests/005_reliable_delivery_test.sql:/checks/005_reliable_delivery_test.sql:ro
+    restart: "no"

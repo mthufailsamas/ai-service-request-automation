@@ -1,0 +1,154 @@
+{
+  "id": "recoveryworkflowv1",
+  "name": "AI Service Request - Scheduled Recovery v1",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {"interval": [{"field": "minutes", "minutesInterval": 5}]}
+      },
+      "id": "b538de4b-c6df-4938-a669-b6d7815381f4",
+      "name": "Every Five Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [0, -180]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://primary-api:8000/internal/v1/recovery/sweep",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({schema_version: '1', lease_seconds: 60, retry_delay_seconds: 0, limit: 20}) }}",
+        "options": {"timeout": 5000}
+      },
+      "id": "c845de15-bf83-4731-bfb5-ff4309a92a8c",
+      "name": "Run Scheduled Recovery",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [260, -180],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "primary-workflow-api-auth-v1",
+          "name": "Primary Workflow API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "service-request-recovery-v1",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "217ed84e-a14a-4df3-979d-67ab23badf1f",
+      "name": "Authenticated Recovery Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 80],
+      "webhookId": "424d8062-fe52-45c4-9410-6d983d91a9aa",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "workflow-start-webhook-auth-v1",
+          "name": "Workflow Start Webhook Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const body = $json.body;\nconst valid = body !== null && typeof body === 'object' && !Array.isArray(body)\n  && JSON.stringify(Object.keys(body).sort()) === JSON.stringify(['schema_version'])\n  && body.schema_version === '1';\nif (!valid) {\n  return {json:{valid:false,response_status:422,response_body:{error_code:'INVALID_RECOVERY_TRIGGER',message:'The request does not match the recovery trigger contract.',retryable:false}}};\n}\nreturn {json:{valid:true}};"
+      },
+      "id": "64300cdd-7068-4ba6-805a-8dc21e0d0bf8",
+      "name": "Validate Recovery Trigger",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 80]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 2},
+          "conditions": [{
+            "id": "88704c68-66b2-4f94-ae5f-65b0dcba5d7c",
+            "leftValue": "={{ $json.valid }}",
+            "rightValue": "",
+            "operator": {"type": "boolean", "operation": "true", "singleValue": true}
+          }],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1670215-3fb8-42f7-838c-b75a80efba84",
+      "name": "Recovery Trigger Is Valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [460, 80]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://primary-api:8000/internal/v1/recovery/sweep",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({schema_version: '1', lease_seconds: 60, retry_delay_seconds: 0, limit: 20}) }}",
+        "options": {
+          "timeout": 5000,
+          "response": {"response": {"fullResponse": true, "neverError": true, "responseFormat": "json"}}
+        }
+      },
+      "id": "29f4fde4-5233-43bc-b45f-bc4f7bb7f509",
+      "name": "Run Recovery Sweep",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 0],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "primary-workflow-api-auth-v1",
+          "name": "Primary Workflow API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "function obj(v){if(typeof v==='string'){try{v=JSON.parse(v)}catch{return null}}return v!==null&&typeof v==='object'&&!Array.isArray(v)?v:null}\nconst suppliedStatus=$json.response_status??$json.statusCode;\nconst suppliedBody=$json.response_body??$json.body;\nconst roots=[obj(suppliedBody),obj($json.data),obj($json.response),obj($json)].filter(Boolean);\nconst candidates=[];for(const r of roots){for(const v of [r,obj(r.body),obj(r.data),obj(r.response),obj(r.json)]){if(v&&!candidates.includes(v))candidates.push(v)}}\nconst good=candidates.find(v=>JSON.stringify(Object.keys(v).sort())===JSON.stringify(['pending_retries','recovered_by_type','recovered_claims','schema_version','status','terminal_failures'])&&v.schema_version==='1'&&v.status==='COMPLETED'&&Number.isInteger(v.recovered_claims)&&Number.isInteger(v.pending_retries)&&Number.isInteger(v.terminal_failures)&&obj(v.recovered_by_type));\nif(Number(suppliedStatus)===200&&good){return {json:{response_status:200,response_body_json:JSON.stringify(good)}}}\nif($json.response_status){return {json:{response_status:$json.response_status,response_body_json:JSON.stringify($json.response_body)}}}\nreturn {json:{response_status:502,response_body_json:JSON.stringify({error_code:'INVALID_PRIMARY_RESPONSE',message:'The primary recovery response did not match the v1 contract.',retryable:true})}};"
+      },
+      "id": "7c41d93e-a697-43b1-a974-4532827f7fb3",
+      "name": "Prepare Recovery Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [920, 80]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.response_body_json }}",
+        "options": {"enableStreaming": false, "responseCode": "={{ $json.response_status }}"}
+      },
+      "id": "ce0e0ddf-a38d-4474-936b-4dd9e9bd1bc8",
+      "name": "Return Recovery Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [1160, 80]
+    }
+  ],
+  "connections": {
+    "Every Five Minutes": {"main": [[{"node": "Run Scheduled Recovery", "type": "main", "index": 0}]]},
+    "Authenticated Recovery Trigger": {"main": [[{"node": "Validate Recovery Trigger", "type": "main", "index": 0}]]},
+    "Validate Recovery Trigger": {"main": [[{"node": "Recovery Trigger Is Valid", "type": "main", "index": 0}]]},
+    "Recovery Trigger Is Valid": {"main": [[{"node": "Run Recovery Sweep", "type": "main", "index": 0}], [{"node": "Prepare Recovery Response", "type": "main", "index": 0}]]},
+    "Run Recovery Sweep": {"main": [[{"node": "Prepare Recovery Response", "type": "main", "index": 0}]]},
+    "Prepare Recovery Response": {"main": [[{"node": "Return Recovery Response", "type": "main", "index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1", "timezone": "Asia/Jakarta"},
+  "pinData": {},
+  "versionId": "26564f6a-81d3-4fe7-a98f-75b623c4b6d3"
+}

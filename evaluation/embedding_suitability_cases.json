@@ -1,0 +1,146 @@
+{
+  "benchmark_contract_version": "1",
+  "task_instruction": "Given a service-request policy question, retrieve the relevant policy or procedure passage that answers the request.",
+  "acceptance": {
+    "expected_vector_dimensions": 1024,
+    "top_k": 3,
+    "minimum_recall_at_3": 0.9,
+    "minimum_recall_at_3_per_language": 0.8,
+    "maximum_median_warm_query_seconds": 5.0,
+    "maximum_p95_warm_query_seconds": 10.0
+  },
+  "documents": [
+    {
+      "chunk_id": "POL-REMOTE-01#0",
+      "policy_code": "POL-REMOTE-01",
+      "title": "Remote Work",
+      "visibility": "ALL_EMPLOYEES",
+      "text": "Employees assigned to Jakarta may work remotely for up to 2 days in a calendar week. The employee must agree the schedule with their line manager before each remote day."
+    },
+    {
+      "chunk_id": "POL-LEAVE-01#0",
+      "policy_code": "POL-LEAVE-01",
+      "title": "Annual Leave Requests",
+      "visibility": "ALL_EMPLOYEES",
+      "text": "Annual leave requests should be submitted at least 5 business days before the first leave date. An urgent exception must include a reason and is reviewed by the line manager."
+    },
+    {
+      "chunk_id": "POL-ACCESS-01#0",
+      "policy_code": "POL-ACCESS-01",
+      "title": "Standard Application Access",
+      "visibility": "ALL_EMPLOYEES",
+      "text": "Standard non-privileged application access requires line-manager approval and must use the least-privilege role needed for the employee's work. Access is reviewed every 90 days."
+    },
+    {
+      "chunk_id": "POL-PRIVILEGED-01#0",
+      "policy_code": "POL-PRIVILEGED-01",
+      "title": "Temporary Privileged Access",
+      "visibility": "SERVICE_AGENTS",
+      "text": "Temporary administrator access requires approval from both the service owner and Information Security. Each privileged session is limited to 8 hours and must be linked to an approved case."
+    },
+    {
+      "chunk_id": "PROC-INCIDENT-01#0",
+      "policy_code": "PROC-INCIDENT-01",
+      "title": "Critical Incident Escalation",
+      "visibility": "ALL_EMPLOYEES",
+      "text": "A complete customer-facing service outage or an incident affecting all users is classified as critical. Report it through the emergency service-desk channel within 15 minutes of discovery."
+    },
+    {
+      "chunk_id": "PROC-INCIDENT-02#0",
+      "policy_code": "PROC-INCIDENT-02",
+      "title": "Routine Incident Reporting",
+      "visibility": "ALL_EMPLOYEES",
+      "text": "A single-user issue with a working alternative is handled as a routine incident. Submit it through the standard service portal within 1 business day and include the affected service and observed error."
+    },
+    {
+      "chunk_id": "POL-DATA-CHANGE-01#0",
+      "policy_code": "POL-DATA-CHANGE-01",
+      "title": "Master Data Changes",
+      "visibility": "APPROVERS",
+      "text": "A master-data change requires a verified change form and an approver who did not prepare the request. Supplier bank-account changes also require a 2nd verification against the registered bank letter."
+    },
+    {
+      "chunk_id": "PROC-STATUS-01#0",
+      "policy_code": "PROC-STATUS-01",
+      "title": "Case Status Responses",
+      "visibility": "ALL_EMPLOYEES",
+      "text": "A requester may obtain the current case status by providing the case reference. A status response may show the current state and last public update but must exclude confidential approval notes."
+    },
+    {
+      "chunk_id": "POL-RETENTION-01#0",
+      "policy_code": "POL-RETENTION-01",
+      "title": "Service Request Attachment Retention",
+      "visibility": "SERVICE_AGENTS",
+      "text": "Attachments submitted with a service request are retained for 90 days after the case is closed. They are then deleted unless an active legal hold requires longer retention."
+    },
+    {
+      "chunk_id": "PROC-PASSWORD-01#0",
+      "policy_code": "PROC-PASSWORD-01",
+      "title": "Password Reset Identity Check",
+      "visibility": "ALL_EMPLOYEES",
+      "text": "Before resetting a password, the service agent must verify the requester with 2 approved identity factors. The agent must never ask the requester to disclose the current password."
+    }
+  ],
+  "queries": [
+    {
+      "query_id": "remote-days-en",
+      "language": "en",
+      "query": "How many days may a Jakarta employee work from home each week?",
+      "relevant_chunk_ids": ["POL-REMOTE-01#0"]
+    },
+    {
+      "query_id": "leave-notice-id",
+      "language": "id",
+      "query": "Berapa hari kerja sebelumnya saya harus mengajukan cuti tahunan?",
+      "relevant_chunk_ids": ["POL-LEAVE-01#0"]
+    },
+    {
+      "query_id": "standard-access-en",
+      "language": "en",
+      "query": "What approval is required for ordinary read-only application access?",
+      "relevant_chunk_ids": ["POL-ACCESS-01#0"]
+    },
+    {
+      "query_id": "privileged-access-id",
+      "language": "id",
+      "query": "Siapa saja yang harus menyetujui akses administrator sementara?",
+      "relevant_chunk_ids": ["POL-PRIVILEGED-01#0"]
+    },
+    {
+      "query_id": "critical-incident-en",
+      "language": "en",
+      "query": "How quickly must I escalate a customer service outage affecting everyone?",
+      "relevant_chunk_ids": ["PROC-INCIDENT-01#0"]
+    },
+    {
+      "query_id": "routine-incident-id",
+      "language": "id",
+      "query": "Gangguan hanya dialami 1 pengguna dan masih ada cara kerja alternatif. Bagaimana melaporkannya?",
+      "relevant_chunk_ids": ["PROC-INCIDENT-02#0"]
+    },
+    {
+      "query_id": "supplier-bank-change-en",
+      "language": "en",
+      "query": "What evidence and independent review are needed to change a supplier bank account?",
+      "relevant_chunk_ids": ["POL-DATA-CHANGE-01#0"]
+    },
+    {
+      "query_id": "case-status-id",
+      "language": "id",
+      "query": "Informasi apa yang boleh diberikan ketika pemohon menanyakan status kasus dengan nomor referensi?",
+      "relevant_chunk_ids": ["PROC-STATUS-01#0"]
+    },
+    {
+      "query_id": "attachment-retention-en",
+      "language": "en",
+      "query": "When are service-request attachments deleted after a case closes?",
+      "relevant_chunk_ids": ["POL-RETENTION-01#0"]
+    },
+    {
+      "query_id": "password-reset-id",
+      "language": "id",
+      "query": "Apa verifikasi identitas yang wajib dilakukan petugas sebelum mengatur ulang kata sandi?",
+      "relevant_chunk_ids": ["PROC-PASSWORD-01#0"]
+    }
+  ]
+}

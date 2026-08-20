@@ -1,0 +1,93 @@
+name: ai-service-request-guided-demo
+
+services:
+  database:
+    image: pgvector/pgvector:0.8.6-pg17
+    environment:
+      POSTGRES_DB: ai_service_request_demo
+      POSTGRES_USER: service_request_demo
+      POSTGRES_PASSWORD: ${AI_AUTOMATION_DEMO_DB_PASSWORD:?The demo launcher must provide a temporary database password}
+    healthcheck:
+      test: [CMD-SHELL, 'test "$$(cat /proc/1/comm)" = "postgres" && pg_isready -U service_request_demo -d ai_service_request_demo']
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    tmpfs:
+      - /var/lib/postgresql/data
+    volumes:
+      - ../sql/migrations/001_identity_and_reference.sql:/docker-entrypoint-initdb.d/01-migration.sql:ro
+      - ../sql/seeds/001_fictional_identity_and_reference.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+      - ../sql/migrations/002_case_foundation.sql:/docker-entrypoint-initdb.d/03-migration.sql:ro
+      - ../sql/migrations/003_ai_and_decisions.sql:/docker-entrypoint-initdb.d/04-migration.sql:ro
+      - ../sql/migrations/004_policy_retrieval.sql:/docker-entrypoint-initdb.d/05-migration.sql:ro
+      - ../sql/migrations/005_reliable_delivery.sql:/docker-entrypoint-initdb.d/06-migration.sql:ro
+      - ../sql/migrations/006_intake_execution.sql:/docker-entrypoint-initdb.d/07-migration.sql:ro
+      - ../sql/migrations/007_ai_analysis_runtime.sql:/docker-entrypoint-initdb.d/08-migration.sql:ro
+      - ../sql/migrations/008_human_decision_resume.sql:/docker-entrypoint-initdb.d/09-migration.sql:ro
+    restart: "no"
+
+  setup:
+    image: ai-service-request-guided-demo-application:local
+    build:
+      context: ../application
+    depends_on:
+      database: {condition: service_healthy}
+    command: [python, /app/guided_setup.py]
+    environment:
+      DEMO_DATABASE_URL: postgresql://service_request_demo:${AI_AUTOMATION_DEMO_DB_PASSWORD}@database:5432/ai_service_request_demo
+    read_only: true
+    tmpfs: [/tmp]
+    volumes:
+      - ./setup_demo.py:/app/guided_setup.py:ro
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  primary-api:
+    image: ai-service-request-guided-demo-application:local
+    build:
+      context: ../application
+    depends_on:
+      setup: {condition: service_completed_successfully}
+    command: [uvicorn, main:app, --host, 0.0.0.0, --port, "8000"]
+    environment:
+      AI_ANALYSIS_MODEL_IDENTIFIER: 0edcdef34593
+      AI_ANALYSIS_MODEL_NAME: qwen3:4b-instruct
+      AI_ANALYSIS_OLLAMA_BASE_URL: http://host.docker.internal:11434
+      AI_ANALYSIS_PROVIDER: ollama
+      APP_SESSION_SECRET: ${AI_AUTOMATION_DEMO_SESSION_SECRET:?The demo launcher must provide a temporary session secret}
+      INTAKE_WEBHOOK_TOKEN: ${AI_AUTOMATION_DEMO_INTAKE_TOKEN:?The demo launcher must provide a temporary intake token}
+      PRIMARY_DATABASE_URL: postgresql://service_request_demo:${AI_AUTOMATION_DEMO_DB_PASSWORD}@database:5432/ai_service_request_demo
+      PRIMARY_WORKFLOW_TOKEN: ${AI_AUTOMATION_DEMO_WORKFLOW_TOKEN:?The demo launcher must provide a temporary workflow token}
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2).read()"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    ports:
+      - 127.0.0.1:8000:8000
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+
+  ollama-case:
+    image: ai-service-request-guided-demo-application:local
+    depends_on:
+      primary-api: {condition: service_healthy}
+    command: [python, /app/guided_ollama_case.py]
+    environment:
+      DEMO_DATABASE_URL: postgresql://service_request_demo:${AI_AUTOMATION_DEMO_DB_PASSWORD}@database:5432/ai_service_request_demo
+      DEMO_INTAKE_TOKEN: ${AI_AUTOMATION_DEMO_INTAKE_TOKEN:?The demo launcher must provide a temporary intake token}
+      DEMO_PRIMARY_API_URL: http://primary-api:8000
+      DEMO_WORKFLOW_TOKEN: ${AI_AUTOMATION_DEMO_WORKFLOW_TOKEN:?The demo launcher must provide a temporary workflow token}
+    read_only: true
+    tmpfs: [/tmp]
+    volumes:
+      - ./run_ollama_case.py:/app/guided_ollama_case.py:ro
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"

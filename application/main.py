@@ -1649,6 +1649,12 @@ def case_receipt(case_reference: str, request: Request) -> Response:
         "</li>"
         for event in case["events"]
     )
+    analysis_summary = (
+        "<section><h2>AI analysis summary</h2>"
+        f"<p>{html.escape(case['ai_summary'])}</p></section>"
+        if case["ai_summary"]
+        else ""
+    )
     action_forms = _case_action_forms(user, case, cookie_value)
     return HTMLResponse(
         content=_portal_page(
@@ -1667,6 +1673,7 @@ def case_receipt(case_reference: str, request: Request) -> Response:
   <p>Type: {html.escape(case['request_type'] or 'Pending')}</p>
   <p>State: <code>{html.escape(case['current_state'])}</code></p>
 </section>
+{analysis_summary}
 {action_forms}
 <section><h2>Audit history</h2><ol>{events}</ol></section>
 """,

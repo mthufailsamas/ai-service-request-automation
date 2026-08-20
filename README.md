@@ -110,6 +110,28 @@ scores. `check.cmd locked-evaluation` is retained for an independent clean
 reproduction; such a run creates separate evidence and does not replace the
 accepted v1 result in this repository.
 
+## Guided Local Demo
+
+The disposable guided demo provides a browser-based learning surface with 4
+fictional roles, 3 prepared human-decision cases, and 1 optional idempotent
+Ollama analysis case. It is separate from the frozen evaluation evidence.
+
+```powershell
+.\demo.cmd start
+```
+
+Then follow [Guided Local Demo](demo/README.md). The demo binds the portal only
+to `127.0.0.1`, downloads no model, and ends with `demo.cmd stop`, which removes
+its disposable database, containers, network, temporary secrets, and loaded
+language model.
+
+The full walkthrough was verified locally on 2026-08-20: requester,
+service-agent, approver, and administrator boundaries behaved as designed; the
+first Ollama execution made 1 local model call; its proposal failed the exact
+v1 schema and was safely routed to `NEEDS_REVIEW`; the exact replay made 0 model
+calls; and disposable cleanup passed. This learning result does not replace or
+improve the frozen evaluation scores above.
+
 ## Evidence and Scope
 
 The evidence comes from controlled local runs with fictional users, policies,
